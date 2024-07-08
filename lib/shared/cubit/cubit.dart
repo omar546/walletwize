@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite/sqflite.dart';
@@ -10,11 +9,14 @@ import '../styles/styles.dart';
 import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
-
   AppCubit() : super(AppInitialState());
   static AppCubit get(context) => BlocProvider.of(context);
   var currentIndex = 0;
-
+  bool visibleSources = false;
+  void showSources() {
+    visibleSources = !visibleSources;
+    emit(AppShowSourcesState());
+  }
 
   List<Widget> screens = [
     const WalletScreen(),
@@ -39,7 +41,7 @@ class AppCubit extends Cubit<AppStates> {
       version: 1,
       onCreate: (db, version) async {
         await db.execute(
-            'CREATE TABLE transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, amount INTEGER,source TEXT, date TEXT,time TEXT)');
+            'CREATE TABLE transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, amount REAL,type TEXT,source TEXT, date TEXT,time TEXT)');
         await db.execute(
             'CREATE TABLE sources (id INTEGER PRIMARY KEY AUTOINCREMENT, source TEXT,color TEXT,type TEXT,balance REAL)');
       },
@@ -54,22 +56,39 @@ class AppCubit extends Cubit<AppStates> {
     );
   }
 
-  Future insertIntoDatabase({
-    required String title,
-    required String ptitle,
+  Future insertIntoSources({
+    required String source,
+    required String color,
+    required String type,
+    required double balance,
+  }) {
+    return database.transaction(
+          (Transaction txn) async {
+        txn.rawInsert(
+          'INSERT INTO sources ( source,color,type,balance) VALUES(?,?,?,?)',
+          [source, color, type, balance],
+        ).then(
+              (value) {
+            emit(AppInsertDatabaseState());
+            getFromDatabase(database);
+          },
+        );
+      },
+    );
+  }
+
+  Future insertIntoTransactions({
+    required double amount,
+    required String type,
+    required String source,
     required String date,
     required String time,
   }) {
     return database.transaction(
       (Transaction txn) async {
         txn.rawInsert(
-          'INSERT INTO tasks(title,ptitle, date, time,category,color) VALUES(?, ?, ?,?,"uncategorized","#d2d2d2")',
-          [
-            '[{\"insert\":\"${title.replaceAll("'", "''").replaceAll('"', '""').replaceAll('\n', '\\n')}\\n\"}]',
-            ptitle.replaceAll("'", "''").replaceAll('"', '""'),
-            date,
-            time
-          ],
+          'INSERT INTO transactions (amount,type,source,date,time) VALUES(?,?,?,?,?)',
+          [amount, type, source, date, time],
         ).then(
           (value) {
             emit(AppInsertDatabaseState());
@@ -80,7 +99,6 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
-
 
   void getFromDatabase(database) {
     newTransactions = [];
@@ -118,7 +136,6 @@ class AppCubit extends Cubit<AppStates> {
     );
   }
 
-
   void deleteDatabase({required int id}) {
     database.rawDelete('DELETE FROM tasks WHERE id = ?', [id]).then(
       (value) {
@@ -128,38 +145,10 @@ class AppCubit extends Cubit<AppStates> {
     );
   }
 
-
-
-
-
-
-
-
-
-
   Color sourceColor = Styles.greyColor;
   void changeColor(Color color) {
     sourceColor = color;
     emit(CategoryColor());
-  }
-
-  Future insertIntoCategories({
-    required String name,
-    required String color,
-  }) {
-    return database.transaction(
-      (Transaction txn) async {
-        txn.rawInsert(
-          'INSERT INTO categories(category,color) VALUES(?, ?)',
-          [name, color],
-        ).then(
-          (value) {
-            emit(AppInsertDatabaseState());
-            getFromDatabase(database);
-          },
-        );
-      },
-    );
   }
 
 

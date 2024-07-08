@@ -1,13 +1,9 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:walletwize/modules/wallet_screen.dart';
 
-import '../shared/components/components.dart';
 import '../shared/cubit/cubit.dart';
 import '../shared/cubit/states.dart';
-import '../shared/styles/styles.dart';
 
 
 class HomeLayout extends StatelessWidget {
@@ -32,7 +28,7 @@ class HomeLayout extends StatelessWidget {
             extendBody: true,
             appBar: AppBar(
               leading: IconButton(icon:const Icon(Icons.person),onPressed: (){},),
-              title: Center(child: Text('WalletWize',style: TextStyle(fontWeight: FontWeight.bold,fontFamily: 'Quicksand',fontSize: 25),)),
+              title: const Center(child: Text('WalletWize',style: TextStyle(fontWeight: FontWeight.w900,fontFamily: 'Quicksand',fontSize: 25),)),
               actions: [IconButton(icon:const Icon(Icons.more_horiz_sharp),onPressed: (){},),],
             ),
             key: scaffoldKey,

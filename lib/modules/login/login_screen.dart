@@ -80,11 +80,11 @@ class LoginScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   'Wallet',textAlign: TextAlign.center,
-                                  style: TextStyle(height:1,fontSize: 50, fontFamily: 'quicksand',fontWeight: FontWeight.bold,color: Styles.leather,),
+                                  style: TextStyle(height:1,fontSize: 50, fontFamily: 'quicksand',fontWeight: FontWeight.w900,color: Styles.leather,),
                                 ),
                                 Text(
                                   'Wize',textAlign: TextAlign.center,
-                                  style: TextStyle(height:1,fontSize: 50, fontFamily: 'quicksand',fontWeight: FontWeight.bold,color: Styles.positive,),
+                                  style: TextStyle(height:1,fontSize: 50, fontFamily: 'quicksand',fontWeight: FontWeight.w900,color: Styles.positive,),
                                 ),
                                 SizedBox(height: 70,)
                               ],
