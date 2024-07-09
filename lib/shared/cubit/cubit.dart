@@ -57,17 +57,94 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+
   var addSourceController = TextEditingController();
   var addSourceBalanceController = TextEditingController();
   var addSourceTypeController = TextEditingController();
-  Color sourColor = Styles.whiteColor;
   Future<double> getBalanceSum() async {
-    List<Map<String, dynamic>> result = await database.rawQuery('SELECT SUM(balance) as totalBalance FROM sources');
+    List<Map<String, dynamic>> result = await database
+        .rawQuery('SELECT SUM(balance) as totalBalance FROM sources');
     if (result.isNotEmpty && result[0]['totalBalance'] != null) {
       return result[0]['totalBalance'];
     } else {
       return 0.0;
     }
+  }
+
+  void showSourceValueUpdatePrompt(
+      {required int id,
+      required String source,
+      required BuildContext context}) {
+    addSourceController.text = source;
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor:
+                Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+            title: const Text(
+              'Edit Source',
+              style: TextStyle(color: Styles.pacific),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                customForm(
+                  context: context,
+                  controller: addSourceController,
+                  type: TextInputType.text,
+                  label: 'Name',
+                  suffix: Icons.title_rounded,
+                ),
+                SizedBox(height: 15),
+                customForm(
+                  context: context,
+                  controller: addSourceBalanceController,
+                  type: TextInputType.number,
+                  label: 'balance',
+                  suffix: Icons.monetization_on_outlined,
+                ),
+                SizedBox(height: 15),
+                customForm(
+                  context: context,
+                  controller: addSourceTypeController,
+                  type: TextInputType.text,
+                  label: 'type',
+                  suffix: Icons.account_balance,
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Styles.pacific,
+                      foregroundColor: Styles.whiteColor),
+                  onPressed: () {
+                    database.update(
+                        'transactions',
+                        {
+                          'source': addSourceController.text,
+                        },
+                        where: 'source = ?',
+                        whereArgs: [source]);
+                    database.update(
+                        'sources',
+                        {
+                          'source': addSourceController.text,
+                          'type': addSourceTypeController.text.toLowerCase(),
+                          'balance':
+                              double.parse(addSourceBalanceController.text),
+                        },
+                        where: 'id = ?',
+                        whereArgs: [id]);
+                    emit(AppInsertDatabaseState());
+                    getFromDatabase(database);
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Ok!'))
+            ],
+          );
+        });
   }
 
   void showCategoryPrompt(BuildContext context) {
@@ -76,7 +153,7 @@ class AppCubit extends Cubit<AppStates> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor:
-          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+              Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
           title: const Text(
             'Add Source',
             style: TextStyle(color: Styles.pacific),
@@ -107,37 +184,40 @@ class AppCubit extends Cubit<AppStates> {
                 label: 'type',
                 suffix: Icons.account_balance,
               ),
-
-
             ],
           ),
-          actions:  <Widget>[ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Styles.pacific,
-                  foregroundColor: Styles.whiteColor),
-              onPressed: () {
-                insertIntoSources(
+          actions: <Widget>[
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Styles.pacific,
+                    foregroundColor: Styles.whiteColor),
+                onPressed: () {
+                  insertIntoSources(
                     source: addSourceController.text,
-                    balance: double.parse(addSourceBalanceController.text), type: addSourceTypeController.text.toLowerCase(),);
-                Navigator.of(context).pop();
-              },
-              child: const Text('Ok!'))],
+                    balance: double.parse(addSourceBalanceController.text),
+                    type: addSourceTypeController.text.toLowerCase(),
+                  );
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Ok!'))
+          ],
         );
       },
     );
   }
+
   Future insertIntoSources({
     required String source,
     required String type,
     required double balance,
   }) {
     return database.transaction(
-          (Transaction txn) async {
+      (Transaction txn) async {
         txn.rawInsert(
           'INSERT INTO sources ( source,type,balance) VALUES(?,?,?)',
           [source, type, balance],
         ).then(
-              (value) {
+          (value) {
             emit(AppInsertDatabaseState());
             getFromDatabase(database);
           },
@@ -213,35 +293,13 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+
   void deleteSource({required int id}) {
     database.rawDelete('DELETE FROM sources WHERE id = ?', [id]).then(
-          (value) {
+      (value) {
         getFromDatabase(database);
         emit(AppDeleteDatabaseState());
       },
     );
-  }
-
-  Color sourceColor = Styles.pacific;
-  void changeColor(Color color) {
-    sourceColor = color;
-    emit(SourceColor());
-  }
-
-  Color hexToColor(String? hexString) {
-    if (hexString == null) {
-      return Colors.black;
-    }
-    final hexRegex = RegExp(r'([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$');
-
-    hexString = hexString.replaceAll('#', '');
-    if (!hexRegex.hasMatch(hexString)) {
-      return Colors.black;
-    }
-
-    final buffer = StringBuffer();
-    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
-    buffer.write(hexString);
-    return Color(int.tryParse(buffer.toString(), radix: 16) ?? 0xFF000000);
   }
 }

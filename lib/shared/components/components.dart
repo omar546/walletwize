@@ -11,10 +11,8 @@ import '../styles/styles.dart';
 
 Widget buildSourceItem({required Map model, context, required index}) =>
     GestureDetector(
-      onTap: () {
-      },
-      onLongPress: () {
-      },
+      onTap: () {AppCubit.get(context).showSourceValueUpdatePrompt(
+          id: model['id'], context: context, source: model['source']);},
       child: Dismissible(
         direction: DismissDirection.endToStart,
         background: Container(
@@ -32,8 +30,7 @@ Widget buildSourceItem({required Map model, context, required index}) =>
           ),
         ),
         onDismissed: (direction) {
-          AppCubit.get(context)
-              .deleteSource(id: model['id'] );
+          AppCubit.get(context).deleteSource(id: model['id']);
         },
         key: Key(model['id'].toString()),
         child: Padding(
@@ -51,9 +48,9 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                       border: Border.all(
                         width: 1,
                         color: Theme.of(context)
-                            .inputDecorationTheme
-                            .prefixIconColor
-                            ?.withOpacity(0.5) ??
+                                .inputDecorationTheme
+                                .prefixIconColor
+                                ?.withOpacity(0.5) ??
                             Colors.black,
                       ),
                       borderRadius: BorderRadius.circular(10.0),
@@ -66,43 +63,94 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Row(
-                                    children: [
-                                      Visibility(visible: model['type']=='',child: Icon(Icons.account_balance,color: Styles.prussian,)),
-                                      Visibility(visible: model['type'].contains('bank')||model['type'].contains('account'),child: Icon(Icons.account_balance,color: Styles.prussian,)),
-                                      Visibility(visible: model['type'].contains('card')||model['type'].contains('credit'),child: Icon(Icons.credit_card,color: Styles.prussian,)),
-                                      Visibility(visible: model['type'].contains('cash'),child: Icon(Icons.money,color: Styles.prussian,)),
-                                      SizedBox(width: 50,),
-                                      Column(
-                                        children: [
-                                          Text(model['source'].length > 10?
-                                            '${model['source'].substring(0, 10)}':'${model['source']}',
-                                            style: TextStyle(
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Row(
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              model['source'].length > 9
+                                                  ? '${model['source'].substring(0, 9)}...'
+                                                  : '${model['source']}',
+                                              style: TextStyle(
                                                 fontWeight: FontWeight.w900,
-                                                overflow: TextOverflow.ellipsis,
                                                 fontFamily: 'Quicksand',
                                                 fontSize: 20,
-                                                color: Styles.prussian),
-                                          ),
-                          SizedBox(height: 10,),Text(
-                          '${model['balance']}',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontFamily: 'Quicksand',
-                              fontSize: 20,
-                              color: Styles.prussian),
-                        ),
-                                        ],
-                                      )
-                                    ],
+                                                color: Styles.prussian,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              '${model['balance']}',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w900,
+                                                fontFamily: 'Quicksand',
+                                                fontSize: 20,
+                                                color: Styles.prussian,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Spacer(),
+                                        Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Visibility(
+                                              visible: model['type'] == '',
+                                              child: Icon(
+                                                Icons.account_balance,
+                                                color: Styles.prussian,
+                                              ),
+                                            ),
+                                            Visibility(
+                                              visible: model['type'].contains('bank') ||
+                                                  model['type'].contains('account'),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(right: 10.0),
+                                                child: Icon(
+                                                  Icons.account_balance,
+                                                  color: Styles.prussian,
+                                                ),
+                                              ),
+                                            ),
+                                            Visibility(
+                                              visible: model['type'].contains('card') ||
+                                                  model['type'].contains('credit'),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(right: 10.0),
+                                                child: Icon(
+                                                  Icons.credit_card,
+                                                  color: Styles.prussian,
+                                                ),
+                                              ),
+                                            ),
+                                            Visibility(
+                                              visible: model['type'].contains('cash'),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(right: 10.0),
+                                                child: Icon(
+                                                  Icons.money,
+                                                  color: Styles.prussian,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
+
                           ),
                         ),
                       ],
@@ -115,7 +163,6 @@ Widget buildSourceItem({required Map model, context, required index}) =>
         ),
       ),
     );
-
 
 Widget buildTextField({
   double widthRit = 0.6,

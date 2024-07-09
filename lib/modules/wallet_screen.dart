@@ -76,7 +76,7 @@ class WalletScreen extends StatelessWidget {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 30.0),
+                          padding: const EdgeInsets.only(top: 10.0),
                           child: Container(height:AppCubit.get(context).newSources.isNotEmpty?150:5,child: ConditionalBuilder(condition:AppCubit.get(context).newSources.isNotEmpty,fallback: (context) => const SizedBox(
                           ),builder:(context)=> ListView.separated(physics:const BouncingScrollPhysics(),shrinkWrap:true,itemBuilder:(context, index)=> buildSourceItem(context: context,model: AppCubit.get(context).newSources[index],index: 0) , separatorBuilder: (context, index)=>SizedBox(height: 1,), itemCount: AppCubit.get(context).newSources.length)))
                         ),
