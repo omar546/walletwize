@@ -1,18 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import '../cubit/cubit.dart';
-import '../styles/Themes.dart';
 import '../styles/styles.dart';
 
 Widget buildSourceItem({required Map model, context, required index}) =>
     GestureDetector(
       onTap: () {AppCubit.get(context).showSourceValueUpdatePrompt(
-          id: model['id'], context: context, source: model['source']);},
+          id: model['id'], context: context, source: model['source'],balance: model['balance'],type:  model['type'] );},
       child: Dismissible(
         direction: DismissDirection.endToStart,
         background: Container(
@@ -78,19 +72,19 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                               model['source'].length > 9
                                                   ? '${model['source'].substring(0, 9)}...'
                                                   : '${model['source']}',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontWeight: FontWeight.w900,
                                                 fontFamily: 'Quicksand',
                                                 fontSize: 20,
                                                 color: Styles.prussian,
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 10,
                                             ),
                                             Text(
                                               '${model['balance']}',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontWeight: FontWeight.w900,
                                                 fontFamily: 'Quicksand',
                                                 fontSize: 20,
@@ -99,13 +93,13 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                             ),
                                           ],
                                         ),
-                                        Spacer(),
+                                        const Spacer(),
                                         Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Visibility(
                                               visible: model['type'] == '',
-                                              child: Icon(
+                                              child: const Icon(
                                                 Icons.account_balance,
                                                 color: Styles.prussian,
                                               ),
@@ -113,8 +107,8 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                             Visibility(
                                               visible: model['type'].contains('bank') ||
                                                   model['type'].contains('account'),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(right: 10.0),
+                                              child: const Padding(
+                                                padding: EdgeInsets.only(right: 10.0),
                                                 child: Icon(
                                                   Icons.account_balance,
                                                   color: Styles.prussian,
@@ -124,8 +118,8 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                             Visibility(
                                               visible: model['type'].contains('card') ||
                                                   model['type'].contains('credit'),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(right: 10.0),
+                                              child: const Padding(
+                                                padding: EdgeInsets.only(right: 10.0),
                                                 child: Icon(
                                                   Icons.credit_card,
                                                   color: Styles.prussian,
@@ -134,8 +128,8 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                             ),
                                             Visibility(
                                               visible: model['type'].contains('cash'),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(right: 10.0),
+                                              child: const Padding(
+                                                padding: EdgeInsets.only(right: 10.0),
                                                 child: Icon(
                                                   Icons.money,
                                                   color: Styles.prussian,
@@ -164,59 +158,6 @@ Widget buildSourceItem({required Map model, context, required index}) =>
       ),
     );
 
-Widget buildTextField({
-  double widthRit = 0.6,
-  required BuildContext context,
-  required String labelText,
-  required TextEditingController controller,
-  IconData? prefix,
-  bool isClickable = true,
-  var onTap,
-  var validate,
-  required TextInputType type,
-  var onSubmit,
-  var onChange,
-}) {
-  return Expanded(
-    child: Padding(
-      padding: const EdgeInsets.only(
-        right: 40,
-      ),
-      child: Container(
-        decoration:
-            BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
-        child: TextFormField(
-          enabled: isClickable,
-          validator: validate,
-          keyboardType: type,
-          minLines: 1,
-          maxLines: double.maxFinite.toInt(),
-          onFieldSubmitted: onSubmit,
-          onChanged: onChange,
-          onTap: onTap,
-          style: TextStyle(
-              color: Theme.of(context).textTheme.bodyMedium?.color,
-              fontSize: 16),
-          cursorColor: Styles.pacific,
-          controller: controller,
-          // Set the validator function
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.only(left: 45.0),
-            prefixIcon: Icon(prefix, color: Styles.pacific),
-            hintText: labelText,
-            hintStyle: TextStyle(
-              color: Styles.pacific.withOpacity(0.5),
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-            // contentPadding: const EdgeInsets.symmetric(vertical: 4.0),
-            border: InputBorder.none,
-          ),
-        ),
-      ),
-    ),
-  );
-}
 
 void navigateTo(context, widget) => Navigator.push(
     context,

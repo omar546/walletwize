@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:sqflite/sqflite.dart';
-
 import '../../modules/stats_screen.dart';
 import '../../modules/wallet_screen.dart';
-
 import '../components/components.dart';
 import '../styles/styles.dart';
 import 'states.dart';
@@ -15,6 +12,7 @@ class AppCubit extends Cubit<AppStates> {
   static AppCubit get(context) => BlocProvider.of(context);
   var currentIndex = 0;
   bool visibleSources = false;
+  bool visibleSheet = false;
   void showSources() {
     visibleSources = !visibleSources;
     emit(AppShowSourcesState());
@@ -30,7 +28,12 @@ class AppCubit extends Cubit<AppStates> {
       index = 0;
     }
     currentIndex = index;
+    visibleSources = false;
     emit(AppChangeNavBarState());
+  }
+  void SheetChange(){
+    visibleSheet = !visibleSheet;
+    emit(SheetChangeState());
   }
 
   late Database database;
@@ -61,6 +64,7 @@ class AppCubit extends Cubit<AppStates> {
   var addSourceController = TextEditingController();
   var addSourceBalanceController = TextEditingController();
   var addSourceTypeController = TextEditingController();
+  var addTransactionAmountController = TextEditingController();
   Future<double> getBalanceSum() async {
     List<Map<String, dynamic>> result = await database
         .rawQuery('SELECT SUM(balance) as totalBalance FROM sources');
@@ -70,12 +74,16 @@ class AppCubit extends Cubit<AppStates> {
       return 0.0;
     }
   }
-
+  var formKey = GlobalKey<FormState>();
   void showSourceValueUpdatePrompt(
       {required int id,
       required String source,
+      required double balance,
+      required String type,
       required BuildContext context}) {
     addSourceController.text = source;
+    addSourceBalanceController.text = balance.toString();
+    addSourceTypeController.text = type;
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -86,33 +94,50 @@ class AppCubit extends Cubit<AppStates> {
               'Edit Source',
               style: TextStyle(color: Styles.pacific),
             ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                customForm(
-                  context: context,
-                  controller: addSourceController,
-                  type: TextInputType.text,
-                  label: 'Name',
-                  suffix: Icons.title_rounded,
-                ),
-                SizedBox(height: 15),
-                customForm(
-                  context: context,
-                  controller: addSourceBalanceController,
-                  type: TextInputType.number,
-                  label: 'balance',
-                  suffix: Icons.monetization_on_outlined,
-                ),
-                SizedBox(height: 15),
-                customForm(
-                  context: context,
-                  controller: addSourceTypeController,
-                  type: TextInputType.text,
-                  label: 'type',
-                  suffix: Icons.account_balance,
-                ),
-              ],
+            content: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  customForm(
+                    context: context,
+                    controller: addSourceController,
+                    type: TextInputType.text,
+                    label: 'Name *',
+                    suffix: Icons.title_rounded,
+                    validate: (String? value) {
+                      if (value == null ||
+                          value.isEmpty) {
+                        return 'Please type a name';
+                      }
+                      return null; // Return null to indicate the input is valid
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  customForm(
+                    context: context,
+                    controller: addSourceBalanceController,
+                    type: TextInputType.number,
+                    label: 'balance *',
+                    suffix: Icons.monetization_on_outlined,
+                    validate: (String? value) {
+                      if (value == null ||
+                          value.isEmpty) {
+                        return 'Please type a balance';
+                      }
+                      return null; // Return null to indicate the input is valid
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  customForm(
+                    context: context,
+                    controller: addSourceTypeController,
+                    type: TextInputType.text,
+                    label: 'type',
+                    suffix: Icons.account_balance,
+                  ),
+                ],
+              ),
             ),
             actions: <Widget>[
               ElevatedButton(
@@ -120,6 +145,7 @@ class AppCubit extends Cubit<AppStates> {
                       backgroundColor: Styles.pacific,
                       foregroundColor: Styles.whiteColor),
                   onPressed: () {
+          if (formKey.currentState!.validate()) {
                     database.update(
                         'transactions',
                         {
@@ -140,7 +166,7 @@ class AppCubit extends Cubit<AppStates> {
                     emit(AppInsertDatabaseState());
                     getFromDatabase(database);
                     Navigator.of(context).pop();
-                  },
+                  }},
                   child: const Text('Ok!'))
             ],
           );
@@ -158,33 +184,50 @@ class AppCubit extends Cubit<AppStates> {
             'Add Source',
             style: TextStyle(color: Styles.pacific),
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              customForm(
-                context: context,
-                controller: addSourceController,
-                type: TextInputType.text,
-                label: 'Name',
-                suffix: Icons.title_rounded,
-              ),
-              SizedBox(height: 15),
-              customForm(
-                context: context,
-                controller: addSourceBalanceController,
-                type: TextInputType.number,
-                label: 'balance',
-                suffix: Icons.monetization_on_outlined,
-              ),
-              SizedBox(height: 15),
-              customForm(
-                context: context,
-                controller: addSourceTypeController,
-                type: TextInputType.text,
-                label: 'type',
-                suffix: Icons.account_balance,
-              ),
-            ],
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                customForm(
+                  context: context,
+                  controller: addSourceController,
+                  type: TextInputType.text,
+                  label: 'Name *',
+                  suffix: Icons.title_rounded,
+                  validate: (String? value) {
+                    if (value == null ||
+                        value.isEmpty) {
+                      return 'Please type a name';
+                    }
+                    return null; // Return null to indicate the input is valid
+                  },
+                ),
+                const SizedBox(height: 15),
+                customForm(
+                  context: context,
+                  controller: addSourceBalanceController,
+                  type: TextInputType.number,
+                  label: 'balance *',
+                  suffix: Icons.monetization_on_outlined,
+                  validate: (String? value) {
+                    if (value == null ||
+                        value.isEmpty) {
+                      return 'Please type a balance';
+                    }
+                    return null; // Return null to indicate the input is valid
+                  },
+                ),
+                const SizedBox(height: 15),
+                customForm(
+                  context: context,
+                  controller: addSourceTypeController,
+                  type: TextInputType.text,
+                  label: 'type',
+                  suffix: Icons.account_balance,
+                ),
+              ],
+            ),
           ),
           actions: <Widget>[
             ElevatedButton(
@@ -192,13 +235,14 @@ class AppCubit extends Cubit<AppStates> {
                     backgroundColor: Styles.pacific,
                     foregroundColor: Styles.whiteColor),
                 onPressed: () {
+        if (formKey.currentState!.validate()) {
                   insertIntoSources(
                     source: addSourceController.text,
                     balance: double.parse(addSourceBalanceController.text),
                     type: addSourceTypeController.text.toLowerCase(),
                   );
                   Navigator.of(context).pop();
-                },
+                }},
                 child: const Text('Ok!'))
           ],
         );

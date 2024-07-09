@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:walletwize/shared/components/constants.dart';
 import 'package:walletwize/shared/network/local/cache_helper.dart';
 import 'package:walletwize/shared/network/remote/dio_helper.dart';
-import 'package:walletwize/shared/styles/Themes.dart';
+import 'package:walletwize/shared/styles/themes.dart';
 import 'layout/home_layout.dart';
 import 'modules/login/login_screen.dart';
 import 'modules/onboarding/onboarding_screen.dart';
