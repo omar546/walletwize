@@ -1,11 +1,121 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../cubit/cubit.dart';
 import '../styles/Themes.dart';
 import '../styles/styles.dart';
+
+Widget buildSourceItem({required Map model, context, required index}) =>
+    GestureDetector(
+      onTap: () {
+      },
+      onLongPress: () {
+      },
+      child: Dismissible(
+        direction: DismissDirection.endToStart,
+        background: Container(
+          alignment: AlignmentDirectional.centerEnd,
+          color: Styles.greyColor.withOpacity(0),
+          child: Padding(
+            padding: const EdgeInsets.only(right: 30),
+            child: CircleAvatar(
+              backgroundColor: Colors.red,
+              child: Icon(
+                Icons.delete_forever_rounded,
+                color: Theme.of(context).scaffoldBackgroundColor,
+              ),
+            ),
+          ),
+        ),
+        onDismissed: (direction) {
+          AppCubit.get(context)
+              .deleteSource(id: model['id'] );
+        },
+        key: Key(model['id'].toString()),
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.sizeOf(context).width * 0.6),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: Theme.of(context)
+                            .inputDecorationTheme
+                            .prefixIconColor
+                            ?.withOpacity(0.5) ??
+                            Colors.black,
+                      ),
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Styles.whiteColor,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Row(
+                                    children: [
+                                      Visibility(visible: model['type']=='',child: Icon(Icons.account_balance,color: Styles.prussian,)),
+                                      Visibility(visible: model['type'].contains('bank')||model['type'].contains('account'),child: Icon(Icons.account_balance,color: Styles.prussian,)),
+                                      Visibility(visible: model['type'].contains('card')||model['type'].contains('credit'),child: Icon(Icons.credit_card,color: Styles.prussian,)),
+                                      Visibility(visible: model['type'].contains('cash'),child: Icon(Icons.money,color: Styles.prussian,)),
+                                      SizedBox(width: 50,),
+                                      Column(
+                                        children: [
+                                          Text(model['source'].length > 10?
+                                            '${model['source'].substring(0, 10)}':'${model['source']}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w900,
+                                                overflow: TextOverflow.ellipsis,
+                                                fontFamily: 'Quicksand',
+                                                fontSize: 20,
+                                                color: Styles.prussian),
+                                          ),
+                          SizedBox(height: 10,),Text(
+                          '${model['balance']}',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontFamily: 'Quicksand',
+                              fontSize: 20,
+                              color: Styles.prussian),
+                        ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
 
 Widget buildTextField({
   double widthRit = 0.6,

@@ -46,7 +46,7 @@ showUnselectedLabels: false,              currentIndex: cubit.currentIndex,
               },
               items: const [
                 BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.account_balance_wallet),
+                  activeIcon: Icon(Icons.account_balance_wallet_rounded),
                   icon: Icon(Icons.account_balance_wallet_outlined),
                   label:'Wallet',
                 ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:walletwize/shared/styles/styles.dart';
 
+import '../shared/components/components.dart';
 import '../shared/cubit/cubit.dart';
 import '../shared/cubit/states.dart';
 
@@ -11,13 +12,15 @@ class WalletScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   return BlocProvider(
-        create: (context) => AppCubit(),
-        child: BlocConsumer<AppCubit, AppStates>(
-        listener: (context, state) {
-    },
-    builder: (context, state) {
-    return Scaffold(
+   return BlocConsumer<AppCubit, AppStates>(
+       listener: (context, state) {},
+       builder: (context, state) {
+         var cubit = AppCubit.get(context);
+         var categories = cubit.newSources;
+
+         categories.sort((a, b) => a['id'].compareTo(b['id']));
+
+         return Scaffold(
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         scrollDirection: Axis.vertical,
@@ -41,8 +44,25 @@ class WalletScreen extends StatelessWidget {
                               children: [
                                 Text('Total Balance',style: TextStyle(fontFamily: 'Quicksand',fontWeight: FontWeight.bold,fontSize: 12,),),
                                 const SizedBox(height: 10,),
-                                Text('\$ 1233',style: TextStyle(fontFamily: 'Quicksand',fontWeight: FontWeight.bold,fontSize: 20,),),
-                              ],
+                      FutureBuilder<double>(
+                        future: cubit.getBalanceSum(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            return Text(
+                              '\$ ${snapshot.data?.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                fontFamily: 'Quicksand',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                              ),
+                            );
+                          }
+                        },
+                      ),],
                             ),
                             Spacer(),
                             Column(
@@ -57,9 +77,10 @@ class WalletScreen extends StatelessWidget {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 30.0),
-                          child: Container(height:150,child: ListView.separated(physics:const BouncingScrollPhysics(),shrinkWrap:true,itemBuilder:(context, index)=> Container(color: Styles.whiteColor,width: MediaQuery.sizeOf(context).width*0.5,height: 50,) , separatorBuilder: (context, index)=>SizedBox(height: 1,), itemCount: 10))
+                          child: Container(height:AppCubit.get(context).newSources.isNotEmpty?150:5,child: ConditionalBuilder(condition:AppCubit.get(context).newSources.isNotEmpty,fallback: (context) => const SizedBox(
+                          ),builder:(context)=> ListView.separated(physics:const BouncingScrollPhysics(),shrinkWrap:true,itemBuilder:(context, index)=> buildSourceItem(context: context,model: AppCubit.get(context).newSources[index],index: 0) , separatorBuilder: (context, index)=>SizedBox(height: 1,), itemCount: AppCubit.get(context).newSources.length)))
                         ),
-                        IconButton(icon: Icon(Icons.add_box,size: 30,),onPressed: (){},),
+                        IconButton(icon: Icon(Icons.add_box,size: 30,),onPressed: (){AppCubit.get(context).showCategoryPrompt(context);},),
                         Icon(Icons.arrow_drop_up,)
                       ],
                     ),
@@ -75,8 +96,25 @@ class WalletScreen extends StatelessWidget {
                               children: [
                                 Text('Total Balance',style: TextStyle(fontFamily: 'Quicksand',fontWeight: FontWeight.bold,fontSize: 15,),),
                                 const SizedBox(height: 10,),
-                                Text('\$ 1233',style: TextStyle(fontFamily: 'Quicksand',fontWeight: FontWeight.bold,fontSize: 25,),),
-                              ],
+                                FutureBuilder<double>(
+                                  future: cubit.getBalanceSum(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return CircularProgressIndicator();
+                                    } else if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    } else {
+                                      return Text(
+                                        '\$ ${snapshot.data?.toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          fontFamily: 'Quicksand',
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),                              ],
                             ),
                             Spacer(),
                             Column(
@@ -105,5 +143,5 @@ class WalletScreen extends StatelessWidget {
         ),
       )
     );
-  }));
+  });
 }}

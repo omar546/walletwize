@@ -19,7 +19,7 @@ class AppUpdateDatabaseState extends AppStates{}
 
 class AppDeleteDatabaseState extends AppStates{}
 
-class CategoryColor extends AppStates{}
+class SourceColor extends AppStates{}
 
 
 
