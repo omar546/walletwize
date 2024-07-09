@@ -354,4 +354,28 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+
+
+  void newTransaction(){
+    if(positiveTrans){database.update(
+        'sources',
+        {
+          'balance':
+          newSources[selectedSource]['balance'] + double.parse(addTransactionAmountController.text)
+        },
+        where: 'id = ?',
+        whereArgs: [newSources[selectedSource]['id']]);}else{
+      database.update(
+          'sources',
+          {
+            'balance':
+            newSources[selectedSource]['balance'] - double.parse(addTransactionAmountController.text)
+          },
+          where: 'id = ?',
+          whereArgs: [newSources[selectedSource]['id']]);
+    }
+
+      emit(AppInsertDatabaseState());
+      getFromDatabase(database);
+  }
 }
