@@ -1,6 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 import '../../modules/stats_screen.dart';
 import '../../modules/wallet_screen.dart';
 import '../components/components.dart';
@@ -67,10 +70,14 @@ class AppCubit extends Cubit<AppStates> {
   var addSourceTypeController = TextEditingController();
   var addTransactionAmountController = TextEditingController();
   Future<double> getBalanceSum() async {
+    const double maxBalance = 9999999999.0; // Define the maximum balance sum
+
     List<Map<String, dynamic>> result = await database
         .rawQuery('SELECT SUM(balance) as totalBalance FROM sources');
+
     if (result.isNotEmpty && result[0]['totalBalance'] != null) {
-      return result[0]['totalBalance'];
+      double totalBalance = result[0]['totalBalance'];
+      return totalBalance > maxBalance ? maxBalance : totalBalance;
     } else {
       return 0.0;
     }
@@ -84,7 +91,6 @@ class AppCubit extends Cubit<AppStates> {
       required String type,
       required BuildContext context}) {
     addSourceController.text = source;
-    addSourceBalanceController.text = balance.toString();
     addSourceTypeController.text = type;
     showDialog(
         context: context,
@@ -114,27 +120,49 @@ class AppCubit extends Cubit<AppStates> {
                       return null; // Return null to indicate the input is valid
                     },
                   ),
+                  // const SizedBox(height: 15),
+                  // customForm(
+                  //   context: context,
+                  //   controller: addSourceBalanceController,
+                  //   type: TextInputType.number,
+                  //   label: 'balance *',
+                  //   suffix: Icons.monetization_on_outlined,
+                  //   validate: (String? value) {
+                  //     if (value == null || value.isEmpty) {
+                  //       return 'Please type a balance';
+                  //     }
+                  //     return null; // Return null to indicate the input is valid
+                  //   },
+                  // ),
                   const SizedBox(height: 15),
-                  customForm(
-                    context: context,
-                    controller: addSourceBalanceController,
-                    type: TextInputType.number,
-                    label: 'balance *',
-                    suffix: Icons.monetization_on_outlined,
-                    validate: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please type a balance';
+                  ToggleSwitch(
+                    cornerRadius: 15.0,
+                    activeBgColors: [
+                      [Styles.pacific],
+                      [Styles.pacific],
+                      [Styles.pacific],
+                    ],
+                    initialLabelIndex: 0,
+                    activeFgColor: Styles.blackColor,
+                    inactiveBgColor: Styles.prussian,
+                    inactiveFgColor: Styles.whiteColor,
+                    totalSwitches: 3,
+                    icons: [Icons.account_balance, Icons.credit_card,Icons.monetization_on_outlined],
+                    onToggle: (index) {
+                      switch (index) {
+                        case 0:
+                          addSourceTypeController.text = 'bank';
+                          break;
+                        case 1:
+                          addSourceTypeController.text = 'card';
+                          break;
+                        case 2:
+                          addSourceTypeController.text = 'cash';
+                          break;
+                        default:
+                          addSourceTypeController.text = 'bank';
                       }
-                      return null; // Return null to indicate the input is valid
                     },
-                  ),
-                  const SizedBox(height: 15),
-                  customForm(
-                    context: context,
-                    controller: addSourceTypeController,
-                    type: TextInputType.text,
-                    label: 'type',
-                    suffix: Icons.account_balance,
                   ),
                 ],
               ),
@@ -159,7 +187,7 @@ class AppCubit extends Cubit<AppStates> {
                             'source': addSourceController.text,
                             'type': addSourceTypeController.text.toLowerCase(),
                             'balance':
-                                double.parse(addSourceBalanceController.text),
+                                0.0,
                           },
                           where: 'id = ?',
                           whereArgs: [id]);
@@ -174,7 +202,7 @@ class AppCubit extends Cubit<AppStates> {
         });
   }
 
-  void showCategoryPrompt(BuildContext context) {
+  void showSourcePrompt(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -203,29 +231,50 @@ class AppCubit extends Cubit<AppStates> {
                     return null; // Return null to indicate the input is valid
                   },
                 ),
+                // const SizedBox(height: 15),
+                // customForm(
+                //   context: context,
+                //   controller: addSourceBalanceController,
+                //   type: TextInputType.number,
+                //   label: 'balance *',
+                //   suffix: Icons.monetization_on_outlined,
+                //   validate: (String? value) {
+                //     if (value == null || value.isEmpty) {
+                //       return 'Please type a balance';
+                //     }
+                //     return null; // Return null to indicate the input is valid
+                //   },
+                // ),
                 const SizedBox(height: 15),
-                customForm(
-                  context: context,
-                  controller: addSourceBalanceController,
-                  type: TextInputType.number,
-                  label: 'balance *',
-                  suffix: Icons.monetization_on_outlined,
-                  validate: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please type a balance';
-                    }
-                    return null; // Return null to indicate the input is valid
-                  },
-                ),
-                const SizedBox(height: 15),
-                customForm(
-                  context: context,
-                  controller: addSourceTypeController,
-                  type: TextInputType.text,
-                  label: 'type',
-                  suffix: Icons.account_balance,
-                ),
+            ToggleSwitch(
+              cornerRadius: 15.0,
+              activeBgColors: [
+                [Styles.pacific],
+                [Styles.pacific],
+                [Styles.pacific],
               ],
+              activeFgColor: Styles.blackColor,
+              inactiveBgColor: Styles.prussian,
+              inactiveFgColor: Styles.whiteColor,
+              totalSwitches: 3,
+              initialLabelIndex: 0,
+              icons: [Icons.account_balance, Icons.credit_card,Icons.monetization_on_outlined],
+              onToggle: (index) {
+                switch (index) {
+                  case 0:
+                    addSourceTypeController.text = 'bank';
+                    break;
+                  case 1:
+                    addSourceTypeController.text = 'card';
+                    break;
+                  case 2:
+                    addSourceTypeController.text = 'cash';
+                    break;
+                  default:
+                    addSourceTypeController.text = 'bank';
+                }
+              },
+            ),]
             ),
           ),
           actions: <Widget>[
@@ -237,7 +286,7 @@ class AppCubit extends Cubit<AppStates> {
                   if (formKey.currentState!.validate()) {
                     insertIntoSources(
                       source: addSourceController.text,
-                      balance: double.parse(addSourceBalanceController.text),
+                      balance: 0.0,
                       type: addSourceTypeController.text.toLowerCase(),
                     );
                     Navigator.of(context).pop();
@@ -337,9 +386,9 @@ class AppCubit extends Cubit<AppStates> {
     );
   }
 
-  void deleteTransaction({required int id}) {
-    database.rawDelete('DELETE FROM transactions WHERE id = ?', [id]).then(
-      (value) {
+  void deleteAllTransaction() {
+    database.rawDelete('DELETE FROM transactions').then(
+          (value) {
         getFromDatabase(database);
         emit(AppDeleteDatabaseState());
       },
@@ -356,7 +405,7 @@ class AppCubit extends Cubit<AppStates> {
   }
 
 
-  void newTransaction(){
+  void newTransaction(String time){
     if(positiveTrans){database.update(
         'sources',
         {
@@ -364,7 +413,9 @@ class AppCubit extends Cubit<AppStates> {
           newSources[selectedSource]['balance'] + double.parse(addTransactionAmountController.text)
         },
         where: 'id = ?',
-        whereArgs: [newSources[selectedSource]['id']]);}else{
+        whereArgs: [newSources[selectedSource]['id']]);
+    insertIntoTransactions(amount: double.parse(addTransactionAmountController.text),source:newSources[selectedSource]['source'], type: 'increase', date: DateFormat.yMMMd()
+        .format(DateTime.now()),time: time);}else{
       database.update(
           'sources',
           {
@@ -373,9 +424,9 @@ class AppCubit extends Cubit<AppStates> {
           },
           where: 'id = ?',
           whereArgs: [newSources[selectedSource]['id']]);
+      insertIntoTransactions(amount: double.parse(addTransactionAmountController.text),source:newSources[selectedSource]['source'], type: 'decrease', date: DateFormat.yMMMd()
+          .format(DateTime.now()),time: time);
     }
 
-      emit(AppInsertDatabaseState());
-      getFromDatabase(database);
   }
 }

@@ -42,8 +42,10 @@ class HomeLayout extends StatelessWidget {
               )),
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.more_horiz_sharp),
-                  onPressed: () {},
+                  icon: const Icon(Icons.clear_all),
+                  onPressed: () {
+                    cubit.deleteAllTransaction();
+                  },
                 ),
               ],
             ),
@@ -130,7 +132,7 @@ class HomeLayout extends StatelessWidget {
                                                   onSubmit: (v){
                                                     if (cubit.selectedSource != -1 &&
                                                         formKey.currentState!.validate()) {
-                                                      cubit.newTransaction();
+                                                      cubit.newTransaction(TimeOfDay.now().format(context));
                                                     }
                                                   }
                                                 ),
@@ -164,7 +166,7 @@ class HomeLayout extends StatelessWidget {
                                               IconButton(onPressed: (){
                                                 if (cubit.selectedSource != -1 &&
                                                     formKey.currentState!.validate()) {
-                                                  cubit.newTransaction();
+                                                  cubit.newTransaction(TimeOfDay.now().format(context));
                                                   Navigator.of(context).pop();
                                                   cubit.positiveTrans = true;
                                                 }

@@ -3,6 +3,52 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../cubit/cubit.dart';
 import '../styles/styles.dart';
 
+Widget buildHistoryItem({required Map model, context, required index}) =>
+    Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+
+              Text('${model['time']}\n${model['date']}',textAlign: TextAlign.center,style: TextStyle(fontSize: 10,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),),
+              const Spacer(),
+              Text(
+                model['source'].length > 4
+                    ? '${model['source'].substring(0, 4)}...'
+                    : '${model['source']}',
+                style: const TextStyle(color: Styles.whiteColor,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),
+              ),
+              const Spacer(),
+              Text(model['amount'].toString().length > 9 ?
+                '\$ ${model['amount'].toString().substring(0, 4)}...'
+                      : '\$ ${model['amount']}',
+                style: const TextStyle(color: Styles.whiteColor,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),
+              ),
+              const Spacer(),
+              Visibility(
+                replacement: const Icon(
+                  Icons.arrow_downward_rounded,
+                  color: Styles.negative,
+                ),
+                  visible: model['type'] == 'increase',
+                  child: const Icon(
+                    Icons.arrow_upward_rounded,
+                    color: Styles.positive,
+
+                  )),
+
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Container(color: Styles.leather,height: 1,),
+        )
+      ],
+    );
+
 Widget buildSourceItem({required Map model, context, required index}) =>
     GestureDetector(
       onTap: () {
@@ -92,7 +138,7 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                               height: 10,
                                             ),
                                             Text(
-                                              '${model['balance']}',
+                                              '\$ ${model['balance']}',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w900,
                                                 fontFamily: 'Quicksand',
@@ -106,13 +152,6 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                         Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Visibility(
-                                              visible: model['type'] == '',
-                                              child: const Icon(
-                                                Icons.account_balance,
-                                                color: Styles.prussian,
-                                              ),
-                                            ),
                                             Visibility(
                                               visible: model['type']
                                                       .contains('bank') ||
@@ -129,9 +168,7 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                             ),
                                             Visibility(
                                               visible: model['type']
-                                                      .contains('card') ||
-                                                  model['type']
-                                                      .contains('credit'),
+                                                      .contains('card'),
                                               child: const Padding(
                                                 padding: EdgeInsets.only(
                                                     right: 10.0),
@@ -175,7 +212,10 @@ Widget buildSourceItem({required Map model, context, required index}) =>
     );
 
 Widget buildSourceSelectionItem(
-        {required Map model, context, required index, required bool isSelected}) =>
+        {required Map model,
+        context,
+        required index,
+        required bool isSelected}) =>
     Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Column(
@@ -185,17 +225,17 @@ Widget buildSourceSelectionItem(
             visible: model['type'] == '',
             child: Icon(
               Icons.account_balance,
-              color: isSelected?Styles.pacific:Styles.greyColor,
+              color: isSelected ? Styles.pacific : Styles.greyColor,
             ),
           ),
           Visibility(
             visible: model['type'].contains('bank') ||
                 model['type'].contains('account'),
             child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
+              padding: const EdgeInsets.only(right: 10.0),
               child: Icon(
                 Icons.account_balance,
-                color: isSelected?Styles.pacific:Styles.greyColor,
+                color: isSelected ? Styles.pacific : Styles.greyColor,
               ),
             ),
           ),
@@ -203,20 +243,20 @@ Widget buildSourceSelectionItem(
             visible: model['type'].contains('card') ||
                 model['type'].contains('credit'),
             child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
+              padding: const EdgeInsets.only(right: 10.0),
               child: Icon(
                 Icons.credit_card,
-                color: isSelected?Styles.pacific:Styles.greyColor,
+                color: isSelected ? Styles.pacific : Styles.greyColor,
               ),
             ),
           ),
           Visibility(
             visible: model['type'].contains('cash'),
             child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
+              padding: const EdgeInsets.only(right: 10.0),
               child: Icon(
                 Icons.money,
-                color: isSelected?Styles.pacific:Styles.greyColor,
+                color: isSelected ? Styles.pacific : Styles.greyColor,
               ),
             ),
           ),
@@ -228,7 +268,7 @@ Widget buildSourceSelectionItem(
               fontWeight: FontWeight.w900,
               fontFamily: 'Quicksand',
               fontSize: 20,
-              color: isSelected?Styles.pacific:Styles.greyColor,
+              color: isSelected ? Styles.pacific : Styles.greyColor,
             ),
           ),
         ],
