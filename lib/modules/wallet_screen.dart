@@ -66,7 +66,7 @@ class WalletScreen extends StatelessWidget {
                             },
                           ),],
                                 ),
-                                const Spacer(),
+                                Spacer(),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
@@ -79,7 +79,7 @@ class WalletScreen extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 10.0),
-                              child: SizedBox(height:AppCubit.get(context).newSources.isNotEmpty?150:5,child: ConditionalBuilder(condition:AppCubit.get(context).newSources.isNotEmpty,fallback: (context) => const SizedBox(
+                              child: SizedBox(height:AppCubit.get(context).newSources.isNotEmpty?MediaQuery.sizeOf(context).height*0.3:5,child: ConditionalBuilder(condition:AppCubit.get(context).newSources.isNotEmpty,fallback: (context) => const SizedBox(
                               ),builder:(context)=> ListView.separated(physics:const BouncingScrollPhysics(),shrinkWrap:true,itemBuilder:(context, index)=> buildSourceItem(context: context,model: AppCubit.get(context).newSources[index],index: 0) , separatorBuilder: (context, index)=>const SizedBox(height: 1,), itemCount: AppCubit.get(context).newSources.length)))
                             ),
                             IconButton(icon: const Icon(Icons.add_box,size: 30,),onPressed: (){AppCubit.get(context).showCategoryPrompt(context);},),

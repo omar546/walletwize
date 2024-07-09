@@ -5,8 +5,16 @@ import '../styles/styles.dart';
 
 Widget buildSourceItem({required Map model, context, required index}) =>
     GestureDetector(
-      onTap: () {AppCubit.get(context).showSourceValueUpdatePrompt(
-          id: model['id'], context: context, source: model['source'],balance: model['balance'],type:  model['type'] );},
+      onTap: () {
+        if (!AppCubit.get(context).visibleSheet) {
+          AppCubit.get(context).showSourceValueUpdatePrompt(
+              id: model['id'],
+              context: context,
+              source: model['source'],
+              balance: model['balance'],
+              type: model['type']);
+        }
+      },
       child: Dismissible(
         direction: DismissDirection.endToStart,
         background: Container(
@@ -65,7 +73,8 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                     child: Row(
                                       children: [
                                         Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
@@ -105,10 +114,13 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                               ),
                                             ),
                                             Visibility(
-                                              visible: model['type'].contains('bank') ||
-                                                  model['type'].contains('account'),
+                                              visible: model['type']
+                                                      .contains('bank') ||
+                                                  model['type']
+                                                      .contains('account'),
                                               child: const Padding(
-                                                padding: EdgeInsets.only(right: 10.0),
+                                                padding: EdgeInsets.only(
+                                                    right: 10.0),
                                                 child: Icon(
                                                   Icons.account_balance,
                                                   color: Styles.prussian,
@@ -116,10 +128,13 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                               ),
                                             ),
                                             Visibility(
-                                              visible: model['type'].contains('card') ||
-                                                  model['type'].contains('credit'),
+                                              visible: model['type']
+                                                      .contains('card') ||
+                                                  model['type']
+                                                      .contains('credit'),
                                               child: const Padding(
-                                                padding: EdgeInsets.only(right: 10.0),
+                                                padding: EdgeInsets.only(
+                                                    right: 10.0),
                                                 child: Icon(
                                                   Icons.credit_card,
                                                   color: Styles.prussian,
@@ -127,9 +142,11 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                               ),
                                             ),
                                             Visibility(
-                                              visible: model['type'].contains('cash'),
+                                              visible: model['type']
+                                                  .contains('cash'),
                                               child: const Padding(
-                                                padding: EdgeInsets.only(right: 10.0),
+                                                padding: EdgeInsets.only(
+                                                    right: 10.0),
                                                 child: Icon(
                                                   Icons.money,
                                                   color: Styles.prussian,
@@ -144,7 +161,6 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                 ),
                               ],
                             ),
-
                           ),
                         ),
                       ],
@@ -158,6 +174,65 @@ Widget buildSourceItem({required Map model, context, required index}) =>
       ),
     );
 
+Widget buildSourceSelectionItem(
+        {required Map model, context, required index, required bool isSelected}) =>
+    Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Column(
+        children: [
+          Visibility(
+            visible: model['type'] == '',
+            child: Icon(
+              Icons.account_balance,
+              color: isSelected?Styles.pacific:Styles.greyColor,
+            ),
+          ),
+          Visibility(
+            visible: model['type'].contains('bank') ||
+                model['type'].contains('account'),
+            child: Padding(
+              padding: EdgeInsets.only(right: 10.0),
+              child: Icon(
+                Icons.account_balance,
+                color: isSelected?Styles.pacific:Styles.greyColor,
+              ),
+            ),
+          ),
+          Visibility(
+            visible: model['type'].contains('card') ||
+                model['type'].contains('credit'),
+            child: Padding(
+              padding: EdgeInsets.only(right: 10.0),
+              child: Icon(
+                Icons.credit_card,
+                color: isSelected?Styles.pacific:Styles.greyColor,
+              ),
+            ),
+          ),
+          Visibility(
+            visible: model['type'].contains('cash'),
+            child: Padding(
+              padding: EdgeInsets.only(right: 10.0),
+              child: Icon(
+                Icons.money,
+                color: isSelected?Styles.pacific:Styles.greyColor,
+              ),
+            ),
+          ),
+          Text(
+            model['source'].length > 5
+                ? '${model['source'].substring(0, 5)}...'
+                : '${model['source']}',
+            style: TextStyle(
+              fontWeight: FontWeight.w900,
+              fontFamily: 'Quicksand',
+              fontSize: 20,
+              color: isSelected?Styles.pacific:Styles.greyColor,
+            ),
+          ),
+        ],
+      ),
+    );
 
 void navigateTo(context, widget) => Navigator.push(
     context,

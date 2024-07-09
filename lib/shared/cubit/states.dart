@@ -20,6 +20,7 @@ class AppUpdateDatabaseState extends AppStates{}
 class AppDeleteDatabaseState extends AppStates{}
 
 class SheetChangeState extends AppStates{}
+class AppChangeSelectedIndexState extends AppStates{}
 
 
 

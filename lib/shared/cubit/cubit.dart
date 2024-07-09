@@ -31,7 +31,8 @@ class AppCubit extends Cubit<AppStates> {
     visibleSources = false;
     emit(AppChangeNavBarState());
   }
-  void SheetChange(){
+
+  void SheetChange() {
     visibleSheet = !visibleSheet;
     emit(SheetChangeState());
   }
@@ -74,6 +75,7 @@ class AppCubit extends Cubit<AppStates> {
       return 0.0;
     }
   }
+
   var formKey = GlobalKey<FormState>();
   void showSourceValueUpdatePrompt(
       {required int id,
@@ -106,8 +108,7 @@ class AppCubit extends Cubit<AppStates> {
                     label: 'Name *',
                     suffix: Icons.title_rounded,
                     validate: (String? value) {
-                      if (value == null ||
-                          value.isEmpty) {
+                      if (value == null || value.isEmpty) {
                         return 'Please type a name';
                       }
                       return null; // Return null to indicate the input is valid
@@ -121,8 +122,7 @@ class AppCubit extends Cubit<AppStates> {
                     label: 'balance *',
                     suffix: Icons.monetization_on_outlined,
                     validate: (String? value) {
-                      if (value == null ||
-                          value.isEmpty) {
+                      if (value == null || value.isEmpty) {
                         return 'Please type a balance';
                       }
                       return null; // Return null to indicate the input is valid
@@ -145,28 +145,29 @@ class AppCubit extends Cubit<AppStates> {
                       backgroundColor: Styles.pacific,
                       foregroundColor: Styles.whiteColor),
                   onPressed: () {
-          if (formKey.currentState!.validate()) {
-                    database.update(
-                        'transactions',
-                        {
-                          'source': addSourceController.text,
-                        },
-                        where: 'source = ?',
-                        whereArgs: [source]);
-                    database.update(
-                        'sources',
-                        {
-                          'source': addSourceController.text,
-                          'type': addSourceTypeController.text.toLowerCase(),
-                          'balance':
-                              double.parse(addSourceBalanceController.text),
-                        },
-                        where: 'id = ?',
-                        whereArgs: [id]);
-                    emit(AppInsertDatabaseState());
-                    getFromDatabase(database);
-                    Navigator.of(context).pop();
-                  }},
+                    if (formKey.currentState!.validate()) {
+                      database.update(
+                          'transactions',
+                          {
+                            'source': addSourceController.text,
+                          },
+                          where: 'source = ?',
+                          whereArgs: [source]);
+                      database.update(
+                          'sources',
+                          {
+                            'source': addSourceController.text,
+                            'type': addSourceTypeController.text.toLowerCase(),
+                            'balance':
+                                double.parse(addSourceBalanceController.text),
+                          },
+                          where: 'id = ?',
+                          whereArgs: [id]);
+                      emit(AppInsertDatabaseState());
+                      getFromDatabase(database);
+                      Navigator.of(context).pop();
+                    }
+                  },
                   child: const Text('Ok!'))
             ],
           );
@@ -196,8 +197,7 @@ class AppCubit extends Cubit<AppStates> {
                   label: 'Name *',
                   suffix: Icons.title_rounded,
                   validate: (String? value) {
-                    if (value == null ||
-                        value.isEmpty) {
+                    if (value == null || value.isEmpty) {
                       return 'Please type a name';
                     }
                     return null; // Return null to indicate the input is valid
@@ -211,8 +211,7 @@ class AppCubit extends Cubit<AppStates> {
                   label: 'balance *',
                   suffix: Icons.monetization_on_outlined,
                   validate: (String? value) {
-                    if (value == null ||
-                        value.isEmpty) {
+                    if (value == null || value.isEmpty) {
                       return 'Please type a balance';
                     }
                     return null; // Return null to indicate the input is valid
@@ -235,14 +234,15 @@ class AppCubit extends Cubit<AppStates> {
                     backgroundColor: Styles.pacific,
                     foregroundColor: Styles.whiteColor),
                 onPressed: () {
-        if (formKey.currentState!.validate()) {
-                  insertIntoSources(
-                    source: addSourceController.text,
-                    balance: double.parse(addSourceBalanceController.text),
-                    type: addSourceTypeController.text.toLowerCase(),
-                  );
-                  Navigator.of(context).pop();
-                }},
+                  if (formKey.currentState!.validate()) {
+                    insertIntoSources(
+                      source: addSourceController.text,
+                      balance: double.parse(addSourceBalanceController.text),
+                      type: addSourceTypeController.text.toLowerCase(),
+                    );
+                    Navigator.of(context).pop();
+                  }
+                },
                 child: const Text('Ok!'))
           ],
         );
@@ -268,6 +268,14 @@ class AppCubit extends Cubit<AppStates> {
         );
       },
     );
+  }
+
+  bool positiveTrans = true;
+  int selectedSource = -1;
+
+  void updateSelectedIndex(int index) {
+    selectedSource = index;
+    emit(AppChangeSelectedIndexState());
   }
 
   Future insertIntoTransactions({
