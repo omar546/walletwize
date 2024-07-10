@@ -93,11 +93,12 @@ class HomeLayout extends StatelessWidget {
                                 builder:
                                     (BuildContext context, StateSetter setState) {
                                   return Container(
+                                    decoration: BoxDecoration(borderRadius:BorderRadius.circular(15),color:
+                                    Theme.of(context).scaffoldBackgroundColor,border: Border(top: BorderSide(color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific))),
                                     height:
                                         MediaQuery.sizeOf(context).height * 0.3,
                                     width: double.infinity,
-                                    color:
-                                        Theme.of(context).scaffoldBackgroundColor,
+
                                     child: Form(
                                       key: formKey,
                                       child: Column(
