@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../cubit/cubit.dart';
+import '../network/local/cache_helper.dart';
 import '../styles/styles.dart';
+import '../styles/themes.dart';
 
 Widget buildHistoryItem({required Map model, context, required index}) =>
     Column(
@@ -11,40 +13,50 @@ Widget buildHistoryItem({required Map model, context, required index}) =>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-
-              Text('${model['time']}\n${model['date']}',textAlign: TextAlign.center,style: TextStyle(fontSize: 10,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),),
+              Text(
+                '${model['time']}\n${model['date']}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontSize: 10,
+                    fontFamily: 'Quicksand',
+                    fontWeight: FontWeight.bold),
+              ),
               const Spacer(),
               Text(
                 model['source'].length > 4
                     ? '${model['source'].substring(0, 4)}...'
                     : '${model['source']}',
-                style: const TextStyle(color: Styles.whiteColor,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontFamily: 'Quicksand', fontWeight: FontWeight.bold),
               ),
               const Spacer(),
-              Text(model['amount'].toString().length > 9 ?
-                '\$ ${model['amount'].toString().substring(0, 4)}...'
-                      : '\$ ${model['amount']}',
-                style: const TextStyle(color: Styles.whiteColor,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),
+              Text(
+                model['amount'].toString().length > 9
+                    ? '${AppCubit.get(context).currency} ${model['amount'].toString().substring(0, 4)}...'
+                    : '${AppCubit.get(context).currency} ${model['amount']}',
+                style: const TextStyle(
+                    fontFamily: 'Quicksand', fontWeight: FontWeight.bold),
               ),
               const Spacer(),
               Visibility(
-                replacement: const Icon(
-                  Icons.arrow_downward_rounded,
-                  color: Styles.negative,
-                ),
+                  replacement: const Icon(
+                    Icons.arrow_downward_rounded,
+                    color: Styles.negative,
+                  ),
                   visible: model['type'] == 'increase',
                   child: const Icon(
                     Icons.arrow_upward_rounded,
                     color: Styles.positive,
-
                   )),
-
             ],
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Container(color: Styles.leather,height: 1,),
+          child: Container(
+            color: Styles.leather,
+            height: 1,
+          ),
         )
       ],
     );
@@ -77,6 +89,32 @@ Widget buildSourceItem({required Map model, context, required index}) =>
             ),
           ),
         ),
+        confirmDismiss: (DismissDirection direction) async {
+          return await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor:
+                    Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+                title: Text(
+                  "Confirm Delete",
+                  style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyMedium?.color),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: const Text("Delete"),
+                  ),
+                ],
+              );
+            },
+          );
+        },
         onDismissed: (direction) {
           AppCubit.get(context).deleteSource(id: model['id']);
         },
@@ -138,7 +176,7 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                               height: 10,
                                             ),
                                             Text(
-                                              '\$ ${model['balance']}',
+                                              '${AppCubit.get(context).currency} ${model['balance']}',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w900,
                                                 fontFamily: 'Quicksand',
@@ -168,7 +206,7 @@ Widget buildSourceItem({required Map model, context, required index}) =>
                                             ),
                                             Visibility(
                                               visible: model['type']
-                                                      .contains('card'),
+                                                  .contains('card'),
                                               child: const Padding(
                                                 padding: EdgeInsets.only(
                                                     right: 10.0),
@@ -225,7 +263,7 @@ Widget buildSourceSelectionItem(
             visible: model['type'] == '',
             child: Icon(
               Icons.account_balance,
-              color: isSelected ? Styles.pacific : Styles.greyColor,
+              color: (isSelected ? (Styles.pacific) : Styles.greyColor),
             ),
           ),
           Visibility(
@@ -235,7 +273,7 @@ Widget buildSourceSelectionItem(
               padding: const EdgeInsets.only(right: 10.0),
               child: Icon(
                 Icons.account_balance,
-                color: isSelected ? Styles.pacific : Styles.greyColor,
+                color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific) : Styles.greyColor,
               ),
             ),
           ),
@@ -246,7 +284,7 @@ Widget buildSourceSelectionItem(
               padding: const EdgeInsets.only(right: 10.0),
               child: Icon(
                 Icons.credit_card,
-                color: isSelected ? Styles.pacific : Styles.greyColor,
+                color: isSelected ?(CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific): Styles.greyColor,
               ),
             ),
           ),
@@ -256,7 +294,7 @@ Widget buildSourceSelectionItem(
               padding: const EdgeInsets.only(right: 10.0),
               child: Icon(
                 Icons.money,
-                color: isSelected ? Styles.pacific : Styles.greyColor,
+                color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific): Styles.greyColor,
               ),
             ),
           ),
@@ -268,7 +306,7 @@ Widget buildSourceSelectionItem(
               fontWeight: FontWeight.w900,
               fontFamily: 'Quicksand',
               fontSize: 20,
-              color: isSelected ? Styles.pacific : Styles.greyColor,
+              color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific) : Styles.greyColor,
             ),
           ),
         ],
@@ -299,7 +337,7 @@ Widget customButton(
     width: MediaQuery.sizeOf(context).width * widthRatio,
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
-          shape: const StadiumBorder(), backgroundColor: Styles.pacific),
+          shape: const StadiumBorder(), backgroundColor: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific),
       onPressed: onPressed,
       child: Text(
         text,
@@ -345,10 +383,10 @@ Widget customForm({
       suffixIcon: suffix != null
           ? IconButton(
               onPressed: suffixPressed,
-              icon: Icon(
-                suffix,
-                color: Styles.pacific,
-              ),
+              icon: Icon(suffix,
+                  color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                      ? Styles.prussian
+                      : Styles.pacific),
             )
           : null,
       enabledBorder: OutlineInputBorder(

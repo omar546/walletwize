@@ -10,6 +10,7 @@ import '../../shared/components/components.dart';
 import '../../shared/components/constants.dart';
 import '../../shared/network/local/cache_helper.dart';
 import '../../shared/styles/styles.dart';
+import '../../shared/styles/themes.dart';
 import '../register/register_screen.dart';
 import 'cubit/login_cubit.dart';
 import 'cubit/login_states.dart';
@@ -73,18 +74,18 @@ class LoginScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Row(mainAxisAlignment: MainAxisAlignment.center,
+                        Row(mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Column(
                               mainAxisAlignment:MainAxisAlignment.start,
                               children: [
                                 Text(
                                   'Wallet',textAlign: TextAlign.center,
-                                  style: TextStyle(height:1,fontSize: 50, fontFamily: 'quicksand',fontWeight: FontWeight.w900,color: Styles.leather,),
+                                  style: TextStyle(height:1,fontSize: 50, fontFamily: 'quicksand',fontWeight: FontWeight.w900,color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific),
                                 ),
                                 Text(
                                   'Wize',textAlign: TextAlign.center,
-                                  style: TextStyle(height:1,fontSize: 50, fontFamily: 'quicksand',fontWeight: FontWeight.w900,color: Styles.positive,),
+                                  style: TextStyle(height:1,fontSize: 50, fontFamily: 'quicksand',fontWeight: FontWeight.w900,color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific),
                                 ),
                                 SizedBox(height: 70,)
                               ],

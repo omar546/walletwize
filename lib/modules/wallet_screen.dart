@@ -76,7 +76,7 @@ class WalletScreen extends StatelessWidget {
                                                       'Error: ${snapshot.error}');
                                                 } else {
                                                   return Text(
-                                                    '\$ ${snapshot.data?.toStringAsFixed(2)}',
+                                                    '${cubit.currency} ${snapshot.data?.toStringAsFixed(2)}',
                                                     style: const TextStyle(
                                                       fontFamily: 'Quicksand',
                                                       fontWeight:
@@ -207,7 +207,7 @@ class WalletScreen extends StatelessWidget {
                                                       'Error: ${snapshot.error}');
                                                 } else {
                                                   return Text(
-                                                    '\$ ${snapshot.data?.toStringAsFixed(2)}',
+                                                    '${cubit.currency} ${snapshot.data?.toStringAsFixed(2)}',
                                                     style: const TextStyle(
                                                       fontFamily: 'Quicksand',
                                                       fontWeight:

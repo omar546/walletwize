@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:walletwize/shared/cubit/cubit.dart';
 import 'package:walletwize/shared/styles/styles.dart';
 
 import '../network/local/cache_helper.dart';
@@ -10,6 +11,7 @@ enum AppTheme { Light, Dark }
 class ThemeCubit extends Cubit<ThemeData> {
   static const String themeKey = 'theme';
   ThemeCubit() : super(lightTheme) {
+
     final themeIndex =
         CacheHelper.getData(key: themeKey) ?? AppTheme.Dark.index;
     if (themeIndex == AppTheme.Dark.index) {
@@ -28,6 +30,7 @@ class ThemeCubit extends Cubit<ThemeData> {
       emit(lightTheme);
     }
   }
+  bool get isDarkTheme => state == darkTheme;
 }
 
 MaterialColor customGum = const MaterialColor(0xFF22AED1, {
@@ -45,16 +48,30 @@ MaterialColor customGum = const MaterialColor(0xFF22AED1, {
 
 
 ThemeData lightTheme = ThemeData(
+    textSelectionTheme: TextSelectionThemeData(
+        cursorColor: customGum,selectionHandleColor: customGum ,selectionColor: Styles.positive
+
+    ),
+    textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+            foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                if (states.contains(MaterialState.disabled)) {
+                  return Styles.greyColor; // Color when button is disabled
+                }
+                return Styles.prussian; // Color when button is enabled
+              },
+            ),),),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       elevation: 30,
-      backgroundColor: Styles.greyColor,
+      backgroundColor: Styles.whiteColor,
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: Styles.pacific,
+      selectedItemColor: Styles.prussian,
       unselectedItemColor: Styles.greyColor,
       selectedLabelStyle: TextStyle(fontFamily: 'quicksand'),
     ),
     appBarTheme: const AppBarTheme(
-      iconTheme: IconThemeData(color: Styles.pacific),
+      iconTheme: IconThemeData(color: Styles.prussian),
       systemOverlayStyle: SystemUiOverlayStyle(
         statusBarColor: Styles.whiteColor,
         statusBarIconBrightness: Brightness.dark,
@@ -78,6 +95,19 @@ ThemeData lightTheme = ThemeData(
       labelStyle: const TextStyle(color: Styles.blackColor),
     ));
 ThemeData darkTheme = ThemeData(
+  textSelectionTheme: TextSelectionThemeData(
+      cursorColor: customGum,selectionHandleColor: customGum ,selectionColor: Styles.positive
+  ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return Styles.greyColor; // Color when button is disabled
+            }
+            return Styles.pacific; // Color when button is enabled
+          },
+        ),),),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       elevation: 30,
       backgroundColor: Styles.prussian,

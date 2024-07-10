@@ -1,13 +1,15 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import '../../modules/login/login_screen.dart';
 import '../../modules/stats_screen.dart';
 import '../../modules/wallet_screen.dart';
 import '../components/components.dart';
+import '../network/local/cache_helper.dart';
 import '../styles/styles.dart';
+import '../styles/themes.dart';
 import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
@@ -15,6 +17,7 @@ class AppCubit extends Cubit<AppStates> {
   static AppCubit get(context) => BlocProvider.of(context);
   var currentIndex = 0;
   bool visibleSources = false;
+  bool isDark = true;
   bool visibleSheet = false;
   void showSources() {
     visibleSources = !visibleSources;
@@ -98,9 +101,10 @@ class AppCubit extends Cubit<AppStates> {
           return AlertDialog(
             backgroundColor:
                 Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
-            title: const Text(
+            title: Text(
               'Edit Source',
-              style: TextStyle(color: Styles.pacific),
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyMedium?.color),
             ),
             content: Form(
               key: formKey,
@@ -137,17 +141,40 @@ class AppCubit extends Cubit<AppStates> {
                   const SizedBox(height: 15),
                   ToggleSwitch(
                     cornerRadius: 15.0,
-                    activeBgColors: [
-                      [Styles.pacific],
-                      [Styles.pacific],
-                      [Styles.pacific],
-                    ],
                     initialLabelIndex: 0,
-                    activeFgColor: Styles.blackColor,
-                    inactiveBgColor: Styles.prussian,
-                    inactiveFgColor: Styles.whiteColor,
+                    activeBgColors: [
+                      [
+                        (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                            ? Styles.prussian
+                            : Styles.pacific)
+                      ],
+                      [
+                        (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                            ? Styles.prussian
+                            : Styles.pacific)
+                      ],
+                      [
+                        (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                            ? Styles.prussian
+                            : Styles.pacific)
+                      ]
+                    ],
+                    activeFgColor:
+                        CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                            ? Styles.whiteColor
+                            : Styles.blackColor,
+                    inactiveBgColor:
+                        CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                            ? Styles.greyColor
+                            : Styles.prussian,
+                    inactiveFgColor:
+                        Theme.of(context).textTheme.bodyMedium?.color,
                     totalSwitches: 3,
-                    icons: [Icons.account_balance, Icons.credit_card,Icons.monetization_on_outlined],
+                    icons: [
+                      Icons.account_balance,
+                      Icons.credit_card,
+                      Icons.money
+                    ],
                     onToggle: (index) {
                       switch (index) {
                         case 0:
@@ -159,8 +186,6 @@ class AppCubit extends Cubit<AppStates> {
                         case 2:
                           addSourceTypeController.text = 'cash';
                           break;
-                        default:
-                          addSourceTypeController.text = 'bank';
                       }
                     },
                   ),
@@ -170,7 +195,10 @@ class AppCubit extends Cubit<AppStates> {
             actions: <Widget>[
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Styles.pacific,
+                      backgroundColor:
+                          CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                              ? Styles.prussian
+                              : Styles.pacific,
                       foregroundColor: Styles.whiteColor),
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
@@ -186,8 +214,7 @@ class AppCubit extends Cubit<AppStates> {
                           {
                             'source': addSourceController.text,
                             'type': addSourceTypeController.text.toLowerCase(),
-                            'balance':
-                                0.0,
+                            'balance': 0.0,
                           },
                           where: 'id = ?',
                           whereArgs: [id]);
@@ -209,78 +236,82 @@ class AppCubit extends Cubit<AppStates> {
         return AlertDialog(
           backgroundColor:
               Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
-          title: const Text(
+          title: Text(
             'Add Source',
-            style: TextStyle(color: Styles.pacific),
+            style:
+                TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
           ),
           content: Form(
             key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                customForm(
-                  context: context,
-                  controller: addSourceController,
-                  type: TextInputType.text,
-                  label: 'Name *',
-                  suffix: Icons.title_rounded,
-                  validate: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please type a name';
-                    }
-                    return null; // Return null to indicate the input is valid
-                  },
-                ),
-                // const SizedBox(height: 15),
-                // customForm(
-                //   context: context,
-                //   controller: addSourceBalanceController,
-                //   type: TextInputType.number,
-                //   label: 'balance *',
-                //   suffix: Icons.monetization_on_outlined,
-                //   validate: (String? value) {
-                //     if (value == null || value.isEmpty) {
-                //       return 'Please type a balance';
-                //     }
-                //     return null; // Return null to indicate the input is valid
-                //   },
-                // ),
-                const SizedBox(height: 15),
-            ToggleSwitch(
-              cornerRadius: 15.0,
-              activeBgColors: [
-                [Styles.pacific],
-                [Styles.pacific],
-                [Styles.pacific],
-              ],
-              activeFgColor: Styles.blackColor,
-              inactiveBgColor: Styles.prussian,
-              inactiveFgColor: Styles.whiteColor,
-              totalSwitches: 3,
-              initialLabelIndex: 0,
-              icons: [Icons.account_balance, Icons.credit_card,Icons.monetization_on_outlined],
-              onToggle: (index) {
-                switch (index) {
-                  case 0:
-                    addSourceTypeController.text = 'bank';
-                    break;
-                  case 1:
-                    addSourceTypeController.text = 'card';
-                    break;
-                  case 2:
-                    addSourceTypeController.text = 'cash';
-                    break;
-                  default:
-                    addSourceTypeController.text = 'bank';
-                }
-              },
-            ),]
-            ),
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
+              customForm(
+                context: context,
+                controller: addSourceController,
+                type: TextInputType.text,
+                label: 'Name *',
+                suffix: Icons.title_rounded,
+                validate: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please type a name';
+                  }
+                  return null; // Return null to indicate the input is valid
+                },
+              ),
+              const SizedBox(height: 15),
+              ToggleSwitch(
+                cornerRadius: 15.0,
+                activeBgColors: [
+                  [
+                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.prussian
+                        : Styles.pacific)
+                  ],
+                  [
+                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.prussian
+                        : Styles.pacific)
+                  ],
+                  [
+                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.prussian
+                        : Styles.pacific)
+                  ]
+                ],
+                activeFgColor:
+                    CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.whiteColor
+                        : Styles.blackColor,
+                inactiveBgColor:
+                    CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.greyColor
+                        : Styles.prussian,
+                inactiveFgColor: Theme.of(context).textTheme.bodyMedium?.color,
+                totalSwitches: 3,
+                initialLabelIndex: 0,
+                icons: [Icons.account_balance, Icons.credit_card, Icons.money],
+                onToggle: (index) {
+                  switch (index) {
+                    case 0:
+                      addSourceTypeController.text = 'bank';
+                      break;
+                    case 1:
+                      addSourceTypeController.text = 'card';
+                      break;
+                    case 2:
+                      addSourceTypeController.text = 'cash';
+                      break;
+                  }
+                },
+              ),
+            ]),
           ),
           actions: <Widget>[
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Styles.pacific,
+                    backgroundColor:
+                        CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                            ? Styles.prussian
+                            : Styles.pacific,
                     foregroundColor: Styles.whiteColor),
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
@@ -353,6 +384,7 @@ class AppCubit extends Cubit<AppStates> {
   void getFromDatabase(database) {
     newTransactions = [];
     newSources = [];
+    loadCurrencyPreference();
 
     emit(AppGetDatabaseLoadingState());
 
@@ -388,7 +420,7 @@ class AppCubit extends Cubit<AppStates> {
 
   void deleteAllTransaction() {
     database.rawDelete('DELETE FROM transactions').then(
-          (value) {
+      (value) {
         getFromDatabase(database);
         emit(AppDeleteDatabaseState());
       },
@@ -404,29 +436,161 @@ class AppCubit extends Cubit<AppStates> {
     );
   }
 
-
-  void newTransaction(String time){
-    if(positiveTrans){database.update(
-        'sources',
-        {
-          'balance':
-          newSources[selectedSource]['balance'] + double.parse(addTransactionAmountController.text)
-        },
-        where: 'id = ?',
-        whereArgs: [newSources[selectedSource]['id']]);
-    insertIntoTransactions(amount: double.parse(addTransactionAmountController.text),source:newSources[selectedSource]['source'], type: 'increase', date: DateFormat.yMMMd()
-        .format(DateTime.now()),time: time);}else{
+  void newTransaction(String time) {
+    if (positiveTrans) {
       database.update(
           'sources',
           {
-            'balance':
-            newSources[selectedSource]['balance'] - double.parse(addTransactionAmountController.text)
+            'balance': newSources[selectedSource]['balance'] +
+                double.parse(addTransactionAmountController.text)
           },
           where: 'id = ?',
           whereArgs: [newSources[selectedSource]['id']]);
-      insertIntoTransactions(amount: double.parse(addTransactionAmountController.text),source:newSources[selectedSource]['source'], type: 'decrease', date: DateFormat.yMMMd()
-          .format(DateTime.now()),time: time);
+      insertIntoTransactions(
+          amount: double.parse(addTransactionAmountController.text),
+          source: newSources[selectedSource]['source'],
+          type: 'increase',
+          date: DateFormat.yMMMd().format(DateTime.now()),
+          time: time);
+    } else {
+      database.update(
+          'sources',
+          {
+            'balance': newSources[selectedSource]['balance'] -
+                double.parse(addTransactionAmountController.text)
+          },
+          where: 'id = ?',
+          whereArgs: [newSources[selectedSource]['id']]);
+      insertIntoTransactions(
+          amount: double.parse(addTransactionAmountController.text),
+          source: newSources[selectedSource]['source'],
+          type: 'decrease',
+          date: DateFormat.yMMMd().format(DateTime.now()),
+          time: time);
     }
+  }
 
+  String currency = '\$';
+  var currencyIndex = 0;
+  Future<void> saveCurrencyPreference() async {
+    await CacheHelper.saveData(key: 'currency', value: currency);
+    await CacheHelper.saveData(key: 'currencyIndex', value: currencyIndex);
+  }
+
+  // Method to load currency preferences using CacheHelper
+  Future<void> loadCurrencyPreference() async {
+    currency = await CacheHelper.getData(key: 'currency') ?? '\$';
+    currencyIndex = await CacheHelper.getData(key: 'currencyIndex') ?? 0;
+    emit(AppChangeSelectedCurrency());
+  }
+
+  void showSettingPrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Text(
+            'Preferences',
+            style:
+                TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ToggleSwitch(
+                cornerRadius: 15.0,
+                activeBgColors: [
+                  [
+                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.prussian
+                        : Styles.pacific)
+                  ],
+                  [
+                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.prussian
+                        : Styles.pacific)
+                  ],
+                  [
+                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.prussian
+                        : Styles.pacific)
+                  ]
+                ],
+                activeFgColor:
+                    CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.whiteColor
+                        : Styles.blackColor,
+                inactiveBgColor:
+                    CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.greyColor
+                        : Styles.prussian,
+                inactiveFgColor: Theme.of(context).textTheme.bodyMedium?.color,
+                totalSwitches: 3,
+                icons: const [
+                  Icons.attach_money_rounded,
+                  Icons.euro_rounded,
+                  Icons.currency_pound_rounded
+                ],
+                initialLabelIndex: currencyIndex,
+                onToggle: (index) {
+                  switch (index) {
+                    case 0:
+                      currency = '\$';
+                      emit(AppChangeSelectedCurrency());
+                      break;
+                    case 1:
+                      currency = '€';
+                      currencyIndex = 1;
+                      saveCurrencyPreference();
+                      emit(AppChangeSelectedCurrency());
+                      break;
+                    case 2:
+                      currency = '£';
+                      currencyIndex = 2;
+                      saveCurrencyPreference();
+                      emit(AppChangeSelectedCurrency());
+                      break;
+                  }
+                },
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    tooltip: "Theme",
+                    onPressed: () {
+                      isDark = !isDark;
+                      context.read<ThemeCubit>().toggleTheme();
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(Icons.mode_night_rounded,
+                        color:
+                            CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                                ? Styles.prussian
+                                : Styles.pacific),
+                  ),
+                  IconButton(
+                    tooltip: "Logout",
+                    onPressed: () {
+                      navigateAndFinish(context, LoginScreen());
+                    },
+                    icon: Icon(Icons.logout_rounded,
+                        color:
+                            CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                                ? Styles.prussian
+                                : Styles.pacific),
+                  )
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

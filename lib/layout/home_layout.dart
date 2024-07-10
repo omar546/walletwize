@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:walletwize/shared/styles/themes.dart';
 
 import '../shared/components/components.dart';
 import '../shared/cubit/cubit.dart';
 import '../shared/cubit/states.dart';
+import '../shared/network/local/cache_helper.dart';
 import '../shared/styles/styles.dart';
 
 class HomeLayout extends StatelessWidget {
@@ -30,7 +32,7 @@ class HomeLayout extends StatelessWidget {
             appBar: AppBar(
               leading: IconButton(
                 icon: const Icon(Icons.person),
-                onPressed: () {},
+                onPressed: () {cubit.showSettingPrompt(context);},
               ),
               title: const Center(
                   child: Text(
@@ -119,7 +121,7 @@ class HomeLayout extends StatelessWidget {
                                                   controller: cubit
                                                       .addTransactionAmountController,
                                                   type: TextInputType.number,
-                                                  label: 'amount',
+                                                  label: "",
                                                   suffix: Icons
                                                       .currency_exchange_rounded,
                                                   validate: (String? value) {
@@ -170,7 +172,7 @@ class HomeLayout extends StatelessWidget {
                                                   Navigator.of(context).pop();
                                                   cubit.positiveTrans = true;
                                                 }
-                                              }, icon: Icon(Icons.check_circle_rounded,color: Styles.pacific,size: 40,))
+                                              }, icon: Icon(Icons.check_circle_rounded,color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific,size: 40,))
                                             ],
                                           ),
                                           const SizedBox(height: 30),
@@ -195,6 +197,10 @@ class HomeLayout extends StatelessWidget {
               showUnselectedLabels: false,
               currentIndex: cubit.currentIndex,
               onTap: (index) {
+                if(cubit.visibleSheet){
+                  print(cubit.visibleSheet);
+                Navigator.of(context).pop();
+                }
                 cubit.changeBottomNavBarState(index);
               },
               items: const [
