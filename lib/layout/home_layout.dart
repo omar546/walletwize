@@ -46,7 +46,31 @@ class HomeLayout extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.clear_all),
                   onPressed: () {
-                    cubit.deleteAllTransaction();
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+                          title: Text(
+                            "Confirm Delete",
+                            style: TextStyle(
+                                color: Theme.of(context).textTheme.bodyMedium?.color),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text("Cancel"),
+                            ),
+                            TextButton(
+                              onPressed: () { Navigator.of(context).pop();cubit.deleteAllTransaction();},
+                              child: const Text("Delete"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
                   },
                 ),
               ],

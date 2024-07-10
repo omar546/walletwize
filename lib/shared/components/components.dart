@@ -263,7 +263,7 @@ Widget buildSourceSelectionItem(
             visible: model['type'] == '',
             child: Icon(
               Icons.account_balance,
-              color: (isSelected ? (Styles.pacific) : Styles.greyColor),
+              color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific) : Styles.greyColor,
             ),
           ),
           Visibility(
