@@ -269,33 +269,24 @@ Widget buildSourceSelectionItem(
           Visibility(
             visible: model['type'].contains('bank') ||
                 model['type'].contains('account'),
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: Icon(
-                Icons.account_balance,
-                color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific) : Styles.greyColor,
-              ),
+            child: Icon(
+              Icons.account_balance,
+              color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific) : Styles.greyColor,
             ),
           ),
           Visibility(
             visible: model['type'].contains('card') ||
                 model['type'].contains('credit'),
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: Icon(
-                Icons.credit_card,
-                color: isSelected ?(CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific): Styles.greyColor,
-              ),
+            child: Icon(
+              Icons.credit_card,
+              color: isSelected ?(CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific): Styles.greyColor,
             ),
           ),
           Visibility(
             visible: model['type'].contains('cash'),
-            child: Padding(
-              padding: const EdgeInsets.only(right: 10.0),
-              child: Icon(
-                Icons.money,
-                color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific): Styles.greyColor,
-              ),
+            child: Icon(
+              Icons.money,
+              color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific): Styles.greyColor,
             ),
           ),
           Text(

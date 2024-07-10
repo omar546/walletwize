@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -121,8 +123,8 @@ class WalletScreen extends StatelessWidget {
                                             height: AppCubit.get(context)
                                                     .newSources
                                                     .isNotEmpty
-                                                ? MediaQuery.sizeOf(context).height *
-                                                    0.3
+                                                ? (MediaQuery.sizeOf(context).height *min(AppCubit.get(context)
+                                                .newSources.length/8,0.3))
                                                 : 30,
                                             child: ConditionalBuilder(
                                                 condition: AppCubit.get(context)
