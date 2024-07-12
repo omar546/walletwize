@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:walletwize/shared/styles/themes.dart';
@@ -93,7 +92,7 @@ class HomeLayout extends StatelessWidget {
                                 builder:
                                     (BuildContext context, StateSetter setState) {
                                   return Container(
-                                    decoration: BoxDecoration(borderRadius:BorderRadius.circular(15),color:
+                                    decoration: BoxDecoration(borderRadius:const BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15),bottomLeft: Radius.zero,bottomRight: Radius.zero),color:
                                     Theme.of(context).scaffoldBackgroundColor,border: Border(top: BorderSide(color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific))),
                                     height:
                                         MediaQuery.sizeOf(context).height * 0.3,
@@ -164,13 +163,13 @@ class HomeLayout extends StatelessWidget {
                                                   }
                                                 ),
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 20,
                                               ),
                                               ToggleSwitch(
-                                                customWidths: [50.0, 50.0],
+                                                customWidths: const [50.0, 50.0],
                                                 cornerRadius: 15.0,
-                                                activeBgColors: [
+                                                activeBgColors: const [
                                                   [Styles.positive],
                                                   [Styles.negative]
                                                 ],
@@ -178,7 +177,7 @@ class HomeLayout extends StatelessWidget {
                                                 inactiveBgColor: Styles.greyColor,
                                                 inactiveFgColor: Styles.blackColor,
                                                 totalSwitches: 2,
-                                                icons: [Icons.add, Icons.remove],
+                                                icons: const [Icons.add, Icons.remove],
                                                 onToggle: (index) {
                                                   if (index == 1) {
                                                     cubit.positiveTrans = false;
@@ -187,7 +186,7 @@ class HomeLayout extends StatelessWidget {
                                                   }
                                                 },
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 20,
                                               ),
                                               IconButton(onPressed: (){
@@ -223,7 +222,9 @@ class HomeLayout extends StatelessWidget {
               currentIndex: cubit.currentIndex,
               onTap: (index) {
                 if(cubit.visibleSheet){
-                  print(cubit.visibleSheet);
+                  if (kDebugMode) {
+                    print(cubit.visibleSheet);
+                  }
                 Navigator.of(context).pop();
                 }
                 cubit.changeBottomNavBarState(index);
