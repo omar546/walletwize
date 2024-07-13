@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:walletwize/shared/styles/styles.dart';
@@ -108,12 +107,12 @@ class WalletScreen extends StatelessWidget {
                                                   : Styles.negative,
                                               size: 25,
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 10,
                                             ),
                                             Text(
                                               '${cubit.changePercentage} %',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontFamily: 'Quicksand',
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 10,
@@ -249,12 +248,12 @@ class WalletScreen extends StatelessWidget {
                                                       : Styles.negative,
                                               size: 30,
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 10,
                                             ),
                                             Text(
                                               '${cubit.changePercentage} %',
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontFamily: 'Quicksand',
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 12,

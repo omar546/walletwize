@@ -105,6 +105,50 @@ class HomeLayout extends StatelessWidget {
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
+                                          ToggleSwitch(
+                                            minWidth: MediaQuery.sizeOf(context).width*0.4,
+                                            cornerRadius: 15.0,
+                                            initialLabelIndex: 0,
+                                            activeBgColors: [
+                                              [
+                                                (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                                                    ? Styles.prussian
+                                                    : Styles.pacific)
+                                              ],
+                                              [
+                                                (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                                                    ? Styles.prussian
+                                                    : Styles.pacific)
+                                              ],
+                                            ],
+                                            activeFgColor:
+                                            CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                                                ? Styles.whiteColor
+                                                : Styles.blackColor,
+                                            inactiveBgColor:
+                                            CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                                                ? Styles.greyColor
+                                                : Styles.prussian,
+                                            inactiveFgColor:
+                                            Theme.of(context).textTheme.bodyMedium?.color,
+                                            totalSwitches: 2,
+                                            // icons: const [
+                                            //   Icons.home_work_outlined,
+                                            //   Icons.tag_faces_outlined,
+                                            // ],
+                                            labels: const ['Life Expenses','Entertainment'],
+                                            onToggle: (index) {
+                                              switch (index) {
+                                                case 0:
+                                                  cubit.setActivityType('Life Expense');
+                                                  break;
+                                                case 1:
+                                                  cubit.setActivityType('Entertainment');
+                                                  break;
+                                              }
+                                            },
+                                          ),
+                                          const SizedBox(height: 15,),
                                           SizedBox(
                                             height:
                                                 MediaQuery.sizeOf(context).height *
@@ -146,7 +190,7 @@ class HomeLayout extends StatelessWidget {
                                                       .addTransactionAmountController,
                                                   type: TextInputType.number,
                                                   label: "",
-                                                  suffix: Icons
+                                                  prefix: Icons
                                                       .currency_exchange_rounded,
                                                   validate: (String? value) {
                                                     if (value == null ||
@@ -184,8 +228,6 @@ class HomeLayout extends StatelessWidget {
                                                     } else if (index == 1) {
                                                       cubit.positiveTrans = false;
                                                     }
-                                                    // Log the updated positiveTrans value for debugging
-                                                    print('ToggleSwitch onToggle: positiveTrans = ${cubit.positiveTrans}');
                                                   },
                                               ),
                                               const SizedBox(

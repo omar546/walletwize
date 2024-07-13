@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:walletwize/shared/cubit/cubit.dart';
 import 'package:walletwize/shared/styles/styles.dart';
 
 import '../network/local/cache_helper.dart';

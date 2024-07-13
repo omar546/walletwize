@@ -87,7 +87,7 @@ class LoginScreen extends StatelessWidget {
                                   'Wize',textAlign: TextAlign.center,
                                   style: TextStyle(height:1,fontSize: 50, fontFamily: 'quicksand',fontWeight: FontWeight.w900,color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific),
                                 ),
-                                SizedBox(height: 70,)
+                                const SizedBox(height: 70,)
                               ],
                             ),
                           ],

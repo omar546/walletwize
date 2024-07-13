@@ -53,7 +53,7 @@ class AppCubit extends Cubit<AppStates> {
       version: 1,
       onCreate: (db, version) async {
         await db.execute(
-            'CREATE TABLE transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, amount REAL,type TEXT,source TEXT, date TEXT,time TEXT)');
+            'CREATE TABLE transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, amount REAL,type TEXT,source TEXT, date TEXT,time TEXT,activity TEXT)');
         await db.execute(
             'CREATE TABLE sources (id INTEGER PRIMARY KEY AUTOINCREMENT, source TEXT,type TEXT,balance REAL)');
       },
@@ -170,7 +170,7 @@ class AppCubit extends Cubit<AppStates> {
                     inactiveFgColor:
                         Theme.of(context).textTheme.bodyMedium?.color,
                     totalSwitches: 3,
-                    icons: [
+                    icons: const [
                       Icons.account_balance,
                       Icons.credit_card,
                       Icons.money
@@ -288,7 +288,7 @@ class AppCubit extends Cubit<AppStates> {
                 inactiveFgColor: Theme.of(context).textTheme.bodyMedium?.color,
                 totalSwitches: 3,
                 initialLabelIndex: 0,
-                icons: [Icons.account_balance, Icons.credit_card, Icons.money],
+                icons: const [Icons.account_balance, Icons.credit_card, Icons.money],
                 onToggle: (index) {
                   switch (index) {
                     case 0:
@@ -368,12 +368,13 @@ class AppCubit extends Cubit<AppStates> {
     required String source,
     required String date,
     required String time,
+    required String activity,
   }) {
     return database.transaction(
       (Transaction txn) async {
         txn.rawInsert(
-          'INSERT INTO transactions (amount,type,source,date,time) VALUES(?,?,?,?,?)',
-          [amount, type, source, date, time],
+          'INSERT INTO transactions (amount,type,source,date,time,activity) VALUES(?,?,?,?,?,?)',
+          [amount, type, source, date, time, activity],
         ).then(
           (value) {
             emit(AppInsertDatabaseState());
@@ -459,6 +460,11 @@ class AppCubit extends Cubit<AppStates> {
     CacheHelper.saveData(key: 'changeP', value: changePercentage);
 
   }
+  String activityType = 'Life Expense';
+  void setActivityType(String activity){
+    activityType = activity;
+    emit(AppChangeTransactionType());
+  }
   void newTransaction(String time) async {
     double oldTotal = await getBalanceSum();
 
@@ -487,11 +493,11 @@ class AppCubit extends Cubit<AppStates> {
       type: positiveTrans ? 'increase' : 'decrease',
       date: DateFormat.yMMMd().format(DateTime.now()),
       time: time,
+      activity: activityType
     );
 
     double newTotal = await getBalanceSum(); // Get the new total balance
     calculateChangePercentage(oldTotal, newTotal);
-    print(changePercentage);
 
     positiveTrans = true;
 // Calculate the change percentage
@@ -586,7 +592,7 @@ class AppCubit extends Cubit<AppStates> {
                   }
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(

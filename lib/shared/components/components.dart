@@ -9,7 +9,7 @@ Widget buildHistoryItem({required Map model, context, required index}) =>
     Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -26,6 +26,14 @@ Widget buildHistoryItem({required Map model, context, required index}) =>
                 model['source'].length > 4
                     ? '${model['source'].substring(0, 4)}...'
                     : '${model['source']}',
+                style: const TextStyle(
+                    fontFamily: 'Quicksand', fontWeight: FontWeight.bold),
+              ),
+              const Spacer(),
+              Text(
+                model['activity'] == 'Life Expense'
+                    ? '🏚'
+                    : '☺',
                 style: const TextStyle(
                     fontFamily: 'Quicksand', fontWeight: FontWeight.bold),
               ),
@@ -52,7 +60,7 @@ Widget buildHistoryItem({required Map model, context, required index}) =>
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Container(
             color: Styles.leather,
             height: 1,
