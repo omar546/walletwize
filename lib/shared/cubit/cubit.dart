@@ -351,6 +351,10 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   bool positiveTrans = true;
+  void changeTransType(){
+    positiveTrans = false;
+    emit(AppChangeTransactionType());
+  }
   int selectedSource = -1;
 
   void updateSelectedIndex(int index) {
@@ -431,44 +435,72 @@ class AppCubit extends Cubit<AppStates> {
     database.rawDelete('DELETE FROM sources WHERE id = ?', [id]).then(
       (value) {
         getFromDatabase(database);
+        if(newSources.isEmpty){
+          changePercentage=0.0;
+          CacheHelper.saveData(key: 'changeP', value: 0.0);
+        }
         emit(AppDeleteDatabaseState());
       },
     );
   }
+  double changePercentage = CacheHelper.getData(key: 'changeP') ?? 0.0;
 
-  void newTransaction(String time) {
-    if (positiveTrans) {
-      database.update(
-          'sources',
-          {
-            'balance': newSources[selectedSource]['balance'] +
-                double.parse(addTransactionAmountController.text)
-          },
-          where: 'id = ?',
-          whereArgs: [newSources[selectedSource]['id']]);
-      insertIntoTransactions(
-          amount: double.parse(addTransactionAmountController.text),
-          source: newSources[selectedSource]['source'],
-          type: 'increase',
-          date: DateFormat.yMMMd().format(DateTime.now()),
-          time: time);
-    } else {
-      database.update(
-          'sources',
-          {
-            'balance': newSources[selectedSource]['balance'] -
-                double.parse(addTransactionAmountController.text)
-          },
-          where: 'id = ?',
-          whereArgs: [newSources[selectedSource]['id']]);
-      insertIntoTransactions(
-          amount: double.parse(addTransactionAmountController.text),
-          source: newSources[selectedSource]['source'],
-          type: 'decrease',
-          date: DateFormat.yMMMd().format(DateTime.now()),
-          time: time);
+  void calculateChangePercentage(double oldTotal, double newTotal) {
+    if (oldTotal == 0.0) {
+      changePercentage = 0.0;
+      CacheHelper.saveData(key: 'changeP', value: changePercentage);
+
     }
+    changePercentage =
+    double.parse((((newTotal - oldTotal) / oldTotal) * 100).toStringAsFixed(2));
+    if(changePercentage == double.infinity){
+      changePercentage = 0.0;
+    }
+    CacheHelper.saveData(key: 'changeP', value: changePercentage);
+
   }
+  void newTransaction(String time) async {
+    double oldTotal = await getBalanceSum();
+
+    // Log the values for debugging
+
+
+    double transactionAmount = double.parse(addTransactionAmountController.text);
+    double newBalance = newSources[selectedSource]['balance'];
+
+    if (positiveTrans) {
+      newBalance += transactionAmount;
+    } else {
+      newBalance -= transactionAmount;
+    }
+
+    await database.update(
+      'sources',
+      {'balance': newBalance},
+      where: 'id = ?',
+      whereArgs: [newSources[selectedSource]['id']],
+    );
+
+    await insertIntoTransactions(
+      amount: transactionAmount,
+      source: newSources[selectedSource]['source'],
+      type: positiveTrans ? 'increase' : 'decrease',
+      date: DateFormat.yMMMd().format(DateTime.now()),
+      time: time,
+    );
+
+    double newTotal = await getBalanceSum(); // Get the new total balance
+    calculateChangePercentage(oldTotal, newTotal);
+    print(changePercentage);
+
+    positiveTrans = true;
+// Calculate the change percentage
+
+    emit(AppChangePercentageState(changePercentage)); // Emit a new state with the change percentage
+  }
+
+
+
 
   String currency = '\$';
   var currencyIndex = 0;

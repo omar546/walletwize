@@ -20,8 +20,18 @@ class AppUpdateDatabaseState extends AppStates{}
 class AppDeleteDatabaseState extends AppStates{}
 
 class SheetChangeState extends AppStates{}
+
 class AppChangeSelectedIndexState extends AppStates{}
+
 class AppChangeSelectedCurrency extends AppStates{}
+class AppChangeTransactionType extends AppStates{}
+
+class AppChangePercentageState extends AppStates {
+  final double changePercentage;
+
+  AppChangePercentageState(this.changePercentage);
+}
+
 
 
 

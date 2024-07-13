@@ -92,24 +92,31 @@ class WalletScreen extends StatelessWidget {
                                           ],
                                         ),
                                         const Spacer(),
-                                        const Column(
+                                        Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
                                           children: [
                                             Icon(
-                                              Icons.arrow_circle_up_rounded,
-                                              color: Styles.positive,
+                                              (cubit.changePercentage > 0)
+                                                  ? Icons
+                                                  .arrow_circle_up_rounded
+                                                  : Icons
+                                                  .arrow_circle_down_rounded,
+                                              color:
+                                              (cubit.changePercentage > 0)
+                                                  ? Styles.positive
+                                                  : Styles.negative,
                                               size: 25,
                                             ),
                                             SizedBox(
                                               height: 10,
                                             ),
                                             Text(
-                                              '+30.33%',
+                                              '${cubit.changePercentage} %',
                                               style: TextStyle(
                                                 fontFamily: 'Quicksand',
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 12,
+                                                fontSize: 10,
                                               ),
                                             ),
                                           ],
@@ -123,8 +130,13 @@ class WalletScreen extends StatelessWidget {
                                             height: AppCubit.get(context)
                                                     .newSources
                                                     .isNotEmpty
-                                                ? (MediaQuery.sizeOf(context).height *min(AppCubit.get(context)
-                                                .newSources.length/8,0.3))
+                                                ? (MediaQuery.sizeOf(context).height *
+                                                    min(
+                                                        AppCubit.get(context)
+                                                                .newSources
+                                                                .length /
+                                                            8,
+                                                        0.3))
                                                 : 30,
                                             child: ConditionalBuilder(
                                                 condition: AppCubit.get(context)
@@ -137,23 +149,21 @@ class WalletScreen extends StatelessWidget {
                                                         physics:
                                                             const BouncingScrollPhysics(),
                                                         shrinkWrap: true,
-                                                        itemBuilder: (context, index) => buildSourceItem(
-                                                            context: context,
-                                                            model: AppCubit.get(context)
-                                                                    .newSources[
-                                                                index],
-                                                            index: 0),
-                                                        separatorBuilder:
-                                                            (context, index) =>
-                                                                const SizedBox(
-                                                                  height: 1,
-                                                                ),
-                                                        itemCount: AppCubit.get(context)
-                                                            .newSources
-                                                            .length)))),
+                                                        itemBuilder: (context,
+                                                                index) =>
+                                                            buildSourceItem(
+                                                                context: context,
+                                                                model: AppCubit.get(context).newSources[index],
+                                                                index: 0),
+                                                        separatorBuilder: (context, index) => const SizedBox(
+                                                              height: 1,
+                                                            ),
+                                                        itemCount: AppCubit.get(context).newSources.length)))),
                                     Visibility(
                                       visible: !cubit.visibleSheet,
-                                      replacement: const SizedBox(height: 30,),
+                                      replacement: const SizedBox(
+                                        height: 30,
+                                      ),
                                       child: IconButton(
                                         icon: const Icon(
                                           Icons.add_box,
@@ -223,24 +233,31 @@ class WalletScreen extends StatelessWidget {
                                           ],
                                         ),
                                         const Spacer(),
-                                        const Column(
+                                        Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
                                           children: [
                                             Icon(
-                                              Icons.arrow_circle_up_rounded,
-                                              color: Styles.positive,
+                                              (cubit.changePercentage > 0)
+                                                  ? Icons
+                                                      .arrow_circle_up_rounded
+                                                  : Icons
+                                                      .arrow_circle_down_rounded,
+                                              color:
+                                                  (cubit.changePercentage > 0)
+                                                      ? Styles.positive
+                                                      : Styles.negative,
                                               size: 30,
                                             ),
                                             SizedBox(
                                               height: 10,
                                             ),
                                             Text(
-                                              '+30.33%',
+                                              '${cubit.changePercentage} %',
                                               style: TextStyle(
                                                 fontFamily: 'Quicksand',
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 15,
+                                                fontSize: 12,
                                               ),
                                             ),
                                           ],

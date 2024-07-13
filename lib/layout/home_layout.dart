@@ -178,13 +178,15 @@ class HomeLayout extends StatelessWidget {
                                                 inactiveFgColor: Styles.blackColor,
                                                 totalSwitches: 2,
                                                 icons: const [Icons.add, Icons.remove],
-                                                onToggle: (index) {
-                                                  if (index == 1) {
-                                                    cubit.positiveTrans = false;
-                                                  } else {
-                                                    cubit.positiveTrans = true;
-                                                  }
-                                                },
+                                                  onToggle: (index) {
+                                                    if (index == 0) {
+                                                      cubit.positiveTrans = true;
+                                                    } else if (index == 1) {
+                                                      cubit.positiveTrans = false;
+                                                    }
+                                                    // Log the updated positiveTrans value for debugging
+                                                    print('ToggleSwitch onToggle: positiveTrans = ${cubit.positiveTrans}');
+                                                  },
                                               ),
                                               const SizedBox(
                                                 width: 20,
@@ -192,9 +194,9 @@ class HomeLayout extends StatelessWidget {
                                               IconButton(onPressed: (){
                                                 if (cubit.selectedSource != -1 &&
                                                     formKey.currentState!.validate()) {
+
                                                   cubit.newTransaction(TimeOfDay.now().format(context));
                                                   Navigator.of(context).pop();
-                                                  cubit.positiveTrans = true;
                                                 }
                                               }, icon: Icon(Icons.check_circle_rounded,color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific,size: 40,))
                                             ],
