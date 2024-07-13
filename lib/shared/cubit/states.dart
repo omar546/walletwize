@@ -25,6 +25,7 @@ class AppChangeSelectedIndexState extends AppStates{}
 
 class AppChangeSelectedCurrency extends AppStates{}
 class AppChangeTransactionType extends AppStates{}
+class AppChangeActivityType extends AppStates{}
 
 class AppChangePercentageState extends AppStates {
   final double changePercentage;

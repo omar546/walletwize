@@ -33,7 +33,7 @@ Widget buildHistoryItem({required Map model, context, required index}) =>
               Text(
                 model['activity'] == 'Life Expense'
                     ? '🏚'
-                    : '☺',
+                    : ((model['activity'] == 'Entertainment')?'☺':((model['activity'] == 'Entertainment')?'🥙':'💡')),
                 style: const TextStyle(
                     fontFamily: 'Quicksand', fontWeight: FontWeight.bold),
               ),
@@ -72,14 +72,14 @@ Widget buildHistoryItem({required Map model, context, required index}) =>
 Widget buildSourceItem({required Map model, context, required index}) =>
     GestureDetector(
       onTap: () {
-        if (!AppCubit.get(context).visibleSheet) {
-          AppCubit.get(context).showSourceValueUpdatePrompt(
-              id: model['id'],
-              context: context,
-              source: model['source'],
-              balance: model['balance'],
-              type: model['type']);
-        }
+        // if (!AppCubit.get(context).visibleSheet) {
+        //   AppCubit.get(context).showSourceValueUpdatePrompt(
+        //       id: model['id'],
+        //       context: context,
+        //       source: model['source'],
+        //       balance: model['balance'],
+        //       type: model['type']);
+        // }
       },
       child: Dismissible(
         direction: DismissDirection.endToStart,
