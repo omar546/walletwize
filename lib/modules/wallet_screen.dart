@@ -171,7 +171,7 @@ class WalletScreen extends StatelessWidget {
                                         onPressed: () {
                                           AppCubit.get(context)
                                               .showSourcePrompt(context);
-                                        },
+                                          cubit.addSourceTypeController.text='Bank';                                        },
                                       ),
                                     ),
                                     const Icon(

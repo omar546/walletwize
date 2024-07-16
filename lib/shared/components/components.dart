@@ -29,13 +29,16 @@ Widget buildHistoryItem({required Map model, context, required index}) =>
                 style: const TextStyle(
                     fontFamily: 'Quicksand', fontWeight: FontWeight.bold),
               ),
+              if(model['type']=='decrease')
               const Spacer(),
+              if(model['type']=='decrease')
               Text(
-                model['activity'] == 'Life Expense'
-                    ? '🏚'
-                    : ((model['activity'] == 'Entertainment')?'☺':((model['activity'] == 'Entertainment')?'🥙':'💡')),
-                style: const TextStyle(
-                    fontFamily: 'Quicksand', fontWeight: FontWeight.bold),
+                model['activity'] == 'Must'
+                    ?
+                '🟠'
+                    : ((model['activity'] == 'Need')?
+                '🟡'
+                    :'🔵'),
               ),
               const Spacer(),
               Text(

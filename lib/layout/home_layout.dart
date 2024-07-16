@@ -89,6 +89,7 @@ class HomeLayout extends StatelessWidget {
                       cubit.changeBottomNavBarState(0);
                       cubit.showSources();
                       cubit.SheetChange();
+
                       scaffoldKey.currentState!
                           .showBottomSheet((context) => StatefulBuilder(
                                 builder:
@@ -188,7 +189,8 @@ class HomeLayout extends StatelessWidget {
 
                                                     } else if (index == 1) {
                                                       cubit.positiveTrans = false;
-
+                                                      cubit.setActivityType('Need');
+                                                      cubit.showActivityPrompt(context);
 
                                                     }
 
@@ -207,73 +209,6 @@ class HomeLayout extends StatelessWidget {
                                               }, icon: Icon(Icons.check_circle_rounded,color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific,size: 40,))
                                             ],
                                           ),
-                                          const SizedBox(height: 15,),
-                                    Visibility(
-                                      visible: !cubit.positiveTrans,
-                                      child: ToggleSwitch(
-                                                minWidth: MediaQuery.sizeOf(context).width*0.4,
-                                                cornerRadius: 15.0,
-                                                initialLabelIndex: 0,
-                                                activeBgColors: [
-                                                  [
-                                                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-                                                        ? Styles.prussian
-                                                        : Styles.pacific)
-                                                  ],
-                                                  [
-                                                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-                                                        ? Styles.prussian
-                                                        : Styles.pacific)
-                                                  ],
-                                                  [
-                                                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-                                                        ? Styles.prussian
-                                                        : Styles.pacific)
-                                                  ],
-                                                  [
-                                                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-                                                        ? Styles.prussian
-                                                        : Styles.pacific)
-                                                  ],
-                                                ],
-                                                activeFgColor:
-                                                CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-                                                    ? Styles.whiteColor
-                                                    : Styles.blackColor,
-                                                inactiveBgColor:
-                                                CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-                                                    ? Styles.greyColor
-                                                    : Styles.prussian,
-                                                inactiveFgColor:
-                                                Theme.of(context).textTheme.bodyMedium?.color,
-                                                totalSwitches: 4,
-                                                icons: const [
-                                                  Icons.home_work_outlined,
-                                                  Icons.tag_faces_outlined,
-                                                  Icons.restaurant_sharp,
-                                                  Icons.lightbulb
-                                                ],
-                                                // labels: const ['Life Expenses','Entertainment','Food','Self-Care'],
-                                                onToggle: (index) {
-
-                                                  switch (index) {
-                                                    case 0:
-                                                      cubit.setActivityType('Life Expense');
-                                                      break;
-                                                    case 1:
-                                                      cubit.setActivityType('Entertainment');
-                                                      break;
-                                                    case 2:
-                                                      cubit.setActivityType('Food');
-                                                      break;
-                                                    case 3:
-                                                      cubit.setActivityType('Self-Care');
-                                                      break;
-                                                  }
-
-                                                },
-                                              ),
-                                    ),
                                           const SizedBox(height: 30),
                                         ],
                                       ),

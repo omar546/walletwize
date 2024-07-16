@@ -14,7 +14,9 @@ import 'states.dart';
 
 class AppCubit extends Cubit<AppStates> {
   AppCubit() : super(AppInitialState());
+
   static AppCubit get(context) => BlocProvider.of(context);
+
   var currentIndex = 0;
   bool visibleSources = false;
   bool isDark = true;
@@ -46,6 +48,10 @@ class AppCubit extends Cubit<AppStates> {
   late Database database;
   List<Map> newTransactions = [];
   List<Map> newSources = [];
+  double mustCount=0;
+  double needCount=0;
+  double wantCount=0;
+
 
   void createDatabase() {
     openDatabase(
@@ -288,7 +294,7 @@ class AppCubit extends Cubit<AppStates> {
                         : Styles.prussian,
                 inactiveFgColor: Theme.of(context).textTheme.bodyMedium?.color,
                 totalSwitches: 3,
-                initialLabelIndex: -1,
+                initialLabelIndex: 0,
                 icons: const [Icons.account_balance, Icons.credit_card, Icons.money],
                 onToggle: (index) {
                   switch (index) {
@@ -301,8 +307,7 @@ class AppCubit extends Cubit<AppStates> {
                     case 2:
                       addSourceTypeController.text = 'cash';
                       break;
-                    default:
-                      addSourceTypeController.text = 'bank';
+
                   }
                 },
               ),
@@ -635,4 +640,87 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+  void showActivityPrompt(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: Text(
+            'Type',
+            style:
+            TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ToggleSwitch(
+                cornerRadius: 15.0,
+                initialLabelIndex: 1,
+                activeBgColors: [
+                  [
+                    (Styles.negative)
+                  ],
+                  [
+                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.prussian
+                        : Styles.pacific)
+                  ],
+                  [
+                    Styles.positive
+                  ],
+                  [
+                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.prussian
+                        : Styles.pacific)
+                  ],
+                ],
+                activeFgColor:
+                CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                    ? Styles.whiteColor
+                    : Styles.blackColor,
+                inactiveBgColor:
+                CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                    ? Styles.greyColor
+                    : Styles.prussian,
+                inactiveFgColor:
+                Theme.of(context).textTheme.bodyMedium?.color,
+                totalSwitches: 3,
+
+                labels: const ['Must','Need','Want'],
+                onToggle: (index) {
+
+                  switch (index) {
+                    case 0:
+                      setActivityType('Must');
+                      Navigator.of(context).pop();
+                      break;
+
+                    case 1:
+                      setActivityType('Need');
+                      Navigator.of(context).pop();
+
+                      break;
+                    case 2:
+                      setActivityType('Want');
+                      Navigator.of(context).pop();
+
+                      break;
+                    default:
+                      setActivityType('Need');
+                  }
+
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+class ChartData {
+  ChartData(this.x, this.y);
+  final String x;
+  final double y;
 }
