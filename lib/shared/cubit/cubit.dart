@@ -487,6 +487,11 @@ class AppCubit extends Cubit<AppStates> {
       newBalance += transactionAmount;
     } else {
       newBalance -= transactionAmount;
+      if(activityType == 'Must'){
+        mustCount+=1;
+      }else{if(activityType == 'Want'){wantCount+=1;}else{
+        needCount +=1;
+      }}
     }
 
     await database.update(
@@ -658,16 +663,14 @@ class AppCubit extends Cubit<AppStates> {
                 cornerRadius: 15.0,
                 initialLabelIndex: 1,
                 activeBgColors: [
-                  [
-                    (Styles.negative)
+                  const [
+                    (Colors.orange)
                   ],
-                  [
-                    (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-                        ? Styles.prussian
-                        : Styles.pacific)
+                  const [
+                    Colors.yellow
                   ],
-                  [
-                    Styles.positive
+                  const [
+                    Colors.blue
                   ],
                   [
                     (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
@@ -676,9 +679,7 @@ class AppCubit extends Cubit<AppStates> {
                   ],
                 ],
                 activeFgColor:
-                CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-                    ? Styles.whiteColor
-                    : Styles.blackColor,
+                Styles.blackColor,
                 inactiveBgColor:
                 CacheHelper.getData(key: ThemeCubit.themeKey) == 0
                     ? Styles.greyColor
@@ -719,8 +720,4 @@ class AppCubit extends Cubit<AppStates> {
     );
   }
 }
-class ChartData {
-  ChartData(this.x, this.y);
-  final String x;
-  final double y;
-}
+

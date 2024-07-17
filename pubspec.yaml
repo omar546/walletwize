@@ -51,6 +51,7 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   toggle_switch: ^2.3.0
   fl_chart: ^0.68.0
+  d_chart: ^2.6.9
 
 dev_dependencies:
   flutter_test:
