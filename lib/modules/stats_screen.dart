@@ -1,7 +1,5 @@
-import 'package:d_chart/commons/data_model.dart';
 import 'package:d_chart/d_chart.dart';
-import 'package:d_chart/ordinal/pie.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
