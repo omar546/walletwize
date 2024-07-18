@@ -33,7 +33,9 @@ class HomeLayout extends StatelessWidget {
               elevation: 0,
               leading: IconButton(
                 icon: const Icon(Icons.person),
-                onPressed: () {cubit.showSettingPrompt(context);},
+                onPressed: () {
+                  cubit.showSettingPrompt(context);
+                },
               ),
               title: const Center(
                   child: Text(
@@ -51,12 +53,16 @@ class HomeLayout extends StatelessWidget {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
+                          backgroundColor: Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withOpacity(0.95),
                           title: Text(
                             "Confirm Delete",
                             style: TextStyle(
-                                color: Theme.of(context).textTheme.bodyMedium?.color),
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.color),
                           ),
                           actions: <Widget>[
                             TextButton(
@@ -64,14 +70,19 @@ class HomeLayout extends StatelessWidget {
                               child: const Text("Cancel"),
                             ),
                             TextButton(
-                              onPressed: () { Navigator.of(context).pop();cubit.mustCount = 0;cubit.needCount = 0;cubit.wantCount = 0;cubit.deleteAllTransaction();},
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                cubit.mustCount = 0;
+                                cubit.needCount = 0;
+                                cubit.wantCount = 0;
+                                cubit.deleteAllTransaction();
+                              },
                               child: const Text("Delete"),
                             ),
                           ],
                         );
                       },
                     );
-
                   },
                 ),
               ],
@@ -85,66 +96,80 @@ class HomeLayout extends StatelessWidget {
               visible: !cubit.visibleSheet,
               child: FloatingActionButton(
                 onPressed: () {
-                    if (cubit.newSources.isNotEmpty) {
-                      cubit.changeBottomNavBarState(0);
-                      cubit.showSources();
-                      cubit.SheetChange();
+                  if (cubit.newSources.isNotEmpty) {
+                    cubit.changeBottomNavBarState(0);
+                    cubit.showSources();
+                    cubit.SheetChange();
 
-                      scaffoldKey.currentState!
-                          .showBottomSheet((context) => StatefulBuilder(
-                                builder:
-                                    (BuildContext context, StateSetter setState) {
-                                  return Container(
-                                    decoration: BoxDecoration(borderRadius:const BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15),bottomLeft: Radius.zero,bottomRight: Radius.zero),color:
-                                    Theme.of(context).scaffoldBackgroundColor,border: Border(top: BorderSide(color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific))),
-                                    height:
-                                        MediaQuery.sizeOf(context).height * 0.3,
-                                    width: double.infinity,
-
-                                    child: Form(
-                                      key: formKey,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-
-                                          SizedBox(
-                                            height:
-                                                MediaQuery.sizeOf(context).height *
-                                                    0.1,
-                                            child: ListView.builder(
-                                              scrollDirection: Axis.horizontal,
-                                              shrinkWrap: true,
-                                              itemCount: cubit.newSources.length,
-                                              itemBuilder: (context, index) {
-                                                return GestureDetector(
-                                                    onTap: () {
-                                                      cubit.updateSelectedIndex(
-                                                          index);
-                                                      setState(
-                                                          () {}); // Force rebuild inside StatefulBuilder
-                                                    },
-                                                    child: buildSourceSelectionItem(
-                                                      model:
-                                                          cubit.newSources[index],
-                                                      index: 0,
-                                                      isSelected:
-                                                          cubit.selectedSource ==
-                                                              index,
-                                                    ));
-                                              },
-                                            ),
+                    scaffoldKey.currentState!
+                        .showBottomSheet((context) => StatefulBuilder(
+                              builder:
+                                  (BuildContext context, StateSetter setState) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(15),
+                                          topRight: Radius.circular(15),
+                                          bottomLeft: Radius.zero,
+                                          bottomRight: Radius.zero),
+                                      color: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      border: Border(
+                                          top: BorderSide(
+                                              color: CacheHelper.getData(
+                                                          key: ThemeCubit
+                                                              .themeKey) ==
+                                                      0
+                                                  ? Styles.prussian
+                                                  : Styles.pacific))),
+                                  height:
+                                      MediaQuery.sizeOf(context).height * 0.3,
+                                  width: double.infinity,
+                                  child: Form(
+                                    key: formKey,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          height: MediaQuery.sizeOf(context)
+                                                  .height *
+                                              0.1,
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            shrinkWrap: true,
+                                            itemCount: cubit.newSources.length,
+                                            itemBuilder: (context, index) {
+                                              return GestureDetector(
+                                                  onTap: () {
+                                                    cubit.updateSelectedIndex(
+                                                        index);
+                                                    setState(
+                                                        () {}); // Force rebuild inside StatefulBuilder
+                                                  },
+                                                  child:
+                                                      buildSourceSelectionItem(
+                                                    model:
+                                                        cubit.newSources[index],
+                                                    index: 0,
+                                                    isSelected:
+                                                        cubit.selectedSource ==
+                                                            index,
+                                                  ));
+                                            },
                                           ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                width: MediaQuery.sizeOf(context)
-                                                        .width *
-                                                    0.35,
-                                                child: customForm(
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.sizeOf(context)
+                                                      .width *
+                                                  0.35,
+                                              child: customForm(
                                                   context: context,
                                                   controller: cubit
                                                       .addTransactionAmountController,
@@ -159,70 +184,88 @@ class HomeLayout extends StatelessWidget {
                                                     }
                                                     return null; // Return null to indicate the input is valid
                                                   },
-                                                  onSubmit: (v){
-                                                    if (cubit.selectedSource != -1 &&
-                                                        formKey.currentState!.validate()) {
-                                                      cubit.newTransaction(TimeOfDay.now().format(context));
+                                                  onSubmit: (v) {
+                                                    if (cubit.selectedSource !=
+                                                            -1 &&
+                                                        formKey.currentState!
+                                                            .validate()) {
+                                                      cubit.newTransaction(
+                                                          TimeOfDay.now()
+                                                              .format(context));
                                                     }
-                                                  }
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 20,
-                                              ),
-                                              ToggleSwitch(
-                                                customWidths: const [50.0, 50.0],
-                                                cornerRadius: 15.0,
-                                                activeBgColors: const [
-                                                  [Styles.positive],
-                                                  [Styles.negative]
-                                                ],
-                                                activeFgColor: Styles.whiteColor,
-                                                inactiveBgColor: Styles.greyColor,
-                                                inactiveFgColor: Styles.blackColor,
-                                                totalSwitches: 2,
-                                                icons: const [Icons.add, Icons.remove],
-                                                  onToggle: (index) {
-                                                    if (index == 0) {
-                                                      cubit.positiveTrans = true;
-
-
-                                                    } else if (index == 1) {
-                                                      cubit.positiveTrans = false;
-                                                      cubit.setActivityType('Need');
-                                                      cubit.showActivityPrompt(context);
-
-                                                    }
-
-                                                  },
-                                              ),
-                                              const SizedBox(
-                                                width: 20,
-                                              ),
-                                              IconButton(onPressed: (){
-                                                if (cubit.selectedSource != -1 &&
-                                                    formKey.currentState!.validate()) {
-
-                                                  cubit.newTransaction(TimeOfDay.now().format(context));
-                                                  Navigator.of(context).pop();
+                                                  }),
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            ToggleSwitch(
+                                              customWidths: const [50.0, 50.0],
+                                              cornerRadius: 15.0,
+                                              activeBgColors: const [
+                                                [Styles.positive],
+                                                [Styles.negative]
+                                              ],
+                                              activeFgColor: Styles.whiteColor,
+                                              inactiveBgColor: Styles.greyColor,
+                                              inactiveFgColor:
+                                                  Styles.blackColor,
+                                              totalSwitches: 2,
+                                              icons: const [
+                                                Icons.add,
+                                                Icons.remove
+                                              ],
+                                              onToggle: (index) {
+                                                if (index == 0) {
+                                                  cubit.positiveTrans = true;
+                                                } else if (index == 1) {
+                                                  cubit.positiveTrans = false;
+                                                  cubit.setActivityType('Need');
+                                                  cubit.showActivityPrompt(
+                                                      context);
                                                 }
-                                              }, icon: Icon(Icons.check_circle_rounded,color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific,size: 40,))
-                                            ],
-                                          ),
-                                          const SizedBox(height: 30),
-                                        ],
-                                      ),
+                                              },
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            IconButton(
+                                                onPressed: () {
+                                                  if (cubit.selectedSource !=
+                                                          -1 &&
+                                                      formKey.currentState!
+                                                          .validate()) {
+                                                    cubit.newTransaction(
+                                                        TimeOfDay.now()
+                                                            .format(context));
+                                                    Navigator.of(context).pop();
+                                                  }
+                                                },
+                                                icon: Icon(
+                                                  Icons.check_circle_rounded,
+                                                  color: CacheHelper.getData(
+                                                              key: ThemeCubit
+                                                                  .themeKey) ==
+                                                          0
+                                                      ? Styles.prussian
+                                                      : Styles.pacific,
+                                                  size: 40,
+                                                ))
+                                          ],
+                                        ),
+                                        const SizedBox(height: 30),
+                                      ],
                                     ),
-                                  );
-                                },
-                              ))
-                          .closed
-                          .then((value) => cubit.SheetChange());
-                    } else {
-                      showToast(
-                          message: 'please add sources',
-                          state: ToastStates.WARNING);
-                    }
+                                  ),
+                                );
+                              },
+                            ))
+                        .closed
+                        .then((value) => cubit.SheetChange());
+                  } else {
+                    showToast(
+                        message: 'please add sources',
+                        state: ToastStates.WARNING);
+                  }
                 },
                 child: const Icon(Icons.add),
               ),
@@ -231,11 +274,11 @@ class HomeLayout extends StatelessWidget {
               showUnselectedLabels: false,
               currentIndex: cubit.currentIndex,
               onTap: (index) {
-                if(cubit.visibleSheet){
+                if (cubit.visibleSheet) {
                   if (kDebugMode) {
                     print(cubit.visibleSheet);
                   }
-                Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 }
                 cubit.changeBottomNavBarState(index);
               },

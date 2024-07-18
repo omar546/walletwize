@@ -98,13 +98,13 @@ class WalletScreen extends StatelessWidget {
                                             Icon(
                                               (cubit.changePercentage > 0)
                                                   ? Icons
-                                                  .arrow_circle_up_rounded
+                                                      .arrow_circle_up_rounded
                                                   : Icons
-                                                  .arrow_circle_down_rounded,
+                                                      .arrow_circle_down_rounded,
                                               color:
-                                              (cubit.changePercentage > 0)
-                                                  ? Styles.positive
-                                                  : Styles.negative,
+                                                  (cubit.changePercentage > 0)
+                                                      ? Styles.positive
+                                                      : Styles.negative,
                                               size: 25,
                                             ),
                                             const SizedBox(
@@ -171,7 +171,9 @@ class WalletScreen extends StatelessWidget {
                                         onPressed: () {
                                           AppCubit.get(context)
                                               .showSourcePrompt(context);
-                                          cubit.addSourceTypeController.text='Bank';                                        },
+                                          cubit.addSourceTypeController.text =
+                                              'Bank';
+                                        },
                                       ),
                                     ),
                                     const Icon(

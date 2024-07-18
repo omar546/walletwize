@@ -48,10 +48,9 @@ class AppCubit extends Cubit<AppStates> {
   late Database database;
   List<Map> newTransactions = [];
   List<Map> newSources = [];
-  double mustCount= CacheHelper.getData(key: 'musts')??0;
-  double needCount=CacheHelper.getData(key: 'needs')??0;
-  double wantCount=CacheHelper.getData(key: 'wants')??0;
-
+  double mustCount = CacheHelper.getData(key: 'musts') ?? 0;
+  double needCount = CacheHelper.getData(key: 'needs') ?? 0;
+  double wantCount = CacheHelper.getData(key: 'wants') ?? 0;
 
   void createDatabase() {
     openDatabase(
@@ -295,7 +294,11 @@ class AppCubit extends Cubit<AppStates> {
                 inactiveFgColor: Theme.of(context).textTheme.bodyMedium?.color,
                 totalSwitches: 3,
                 initialLabelIndex: 0,
-                icons: const [Icons.account_balance, Icons.credit_card, Icons.money],
+                icons: const [
+                  Icons.account_balance,
+                  Icons.credit_card,
+                  Icons.money
+                ],
                 onToggle: (index) {
                   switch (index) {
                     case 0:
@@ -307,7 +310,6 @@ class AppCubit extends Cubit<AppStates> {
                     case 2:
                       addSourceTypeController.text = 'cash';
                       break;
-
                   }
                 },
               ),
@@ -360,10 +362,11 @@ class AppCubit extends Cubit<AppStates> {
 
   bool positiveTrans = true;
 
-  void changeTransType(){
+  void changeTransType() {
     positiveTrans = false;
     emit(AppChangeActivityType());
   }
+
   int selectedSource = -1;
 
   void updateSelectedIndex(int index) {
@@ -445,42 +448,44 @@ class AppCubit extends Cubit<AppStates> {
     database.rawDelete('DELETE FROM sources WHERE id = ?', [id]).then(
       (value) {
         getFromDatabase(database);
-        if(newSources.isEmpty){
-          changePercentage=0.0;
+        if (newSources.isEmpty) {
+          changePercentage = 0.0;
           CacheHelper.saveData(key: 'changeP', value: 0.0);
         }
         emit(AppDeleteDatabaseState());
       },
     );
   }
+
   double changePercentage = CacheHelper.getData(key: 'changeP') ?? 0.0;
 
   void calculateChangePercentage(double oldTotal, double newTotal) {
     if (oldTotal == 0.0) {
       changePercentage = 0.0;
       CacheHelper.saveData(key: 'changeP', value: changePercentage);
-
     }
-    changePercentage =
-    double.parse((((newTotal - oldTotal) / oldTotal) * 100).toStringAsFixed(2));
-    if(changePercentage == double.infinity ||changePercentage == double.negativeInfinity){
+    changePercentage = double.parse(
+        (((newTotal - oldTotal) / oldTotal) * 100).toStringAsFixed(2));
+    if (changePercentage == double.infinity ||
+        changePercentage == double.negativeInfinity) {
       changePercentage = 0.0;
     }
     CacheHelper.saveData(key: 'changeP', value: changePercentage);
-
   }
+
   String activityType = '';
-  void setActivityType(String activity){
+  void setActivityType(String activity) {
     activityType = activity;
     emit(AppChangeTransactionType());
   }
+
   void newTransaction(String time) async {
     double oldTotal = await getBalanceSum();
 
     // Log the values for debugging
 
-
-    double transactionAmount = double.parse(addTransactionAmountController.text);
+    double transactionAmount =
+        double.parse(addTransactionAmountController.text);
     double newBalance = newSources[selectedSource]['balance'];
 
     if (positiveTrans) {
@@ -488,14 +493,18 @@ class AppCubit extends Cubit<AppStates> {
     } else {
       transactionAmount = -transactionAmount;
       newBalance += transactionAmount;
-      if(activityType == 'Must'){
-        mustCount+=1;
+      if (activityType == 'Must') {
+        mustCount += 1;
         CacheHelper.saveData(key: 'musts', value: mustCount);
-      }else{if(activityType == 'Want'){wantCount+=1;
-      CacheHelper.saveData(key: 'wants', value: wantCount);}else{
-        needCount +=1;
-        CacheHelper.saveData(key: 'needs', value: needCount);
-      }}
+      } else {
+        if (activityType == 'Want') {
+          wantCount += 1;
+          CacheHelper.saveData(key: 'wants', value: wantCount);
+        } else {
+          needCount += 1;
+          CacheHelper.saveData(key: 'needs', value: needCount);
+        }
+      }
     }
 
     await database.update(
@@ -506,13 +515,12 @@ class AppCubit extends Cubit<AppStates> {
     );
 
     await insertIntoTransactions(
-      amount: transactionAmount,
-      source: newSources[selectedSource]['source'],
-      type: positiveTrans ? 'increase' : 'decrease',
-      date: DateFormat.yMMMd().format(DateTime.now()),
-      time: time,
-      activity: activityType
-    );
+        amount: transactionAmount,
+        source: newSources[selectedSource]['source'],
+        type: positiveTrans ? 'increase' : 'decrease',
+        date: DateFormat.yMMMd().format(DateTime.now()),
+        time: time,
+        activity: activityType);
 
     double newTotal = await getBalanceSum(); // Get the new total balance
     calculateChangePercentage(oldTotal, newTotal);
@@ -520,11 +528,9 @@ class AppCubit extends Cubit<AppStates> {
     positiveTrans = true;
 // Calculate the change percentage
 
-    emit(AppChangePercentageState(changePercentage)); // Emit a new state with the change percentage
+    emit(AppChangePercentageState(
+        changePercentage)); // Emit a new state with the change percentage
   }
-
-
-
 
   String currency = '\$';
   var currencyIndex = 0;
@@ -649,6 +655,7 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
+
   void showActivityPrompt(BuildContext context) {
     showDialog(
       context: context,
@@ -656,9 +663,11 @@ class AppCubit extends Cubit<AppStates> {
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            'Type',textAlign: TextAlign.center,
-            style:
-            TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color,),
+            'Type',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyMedium?.color,
+            ),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -667,34 +676,24 @@ class AppCubit extends Cubit<AppStates> {
                 cornerRadius: 15.0,
                 initialLabelIndex: 1,
                 activeBgColors: [
-                  const [
-                    (Colors.orange)
-                  ],
-                  const [
-                    Colors.yellow
-                  ],
-                  const [
-                    Colors.blue
-                  ],
+                  const [(Colors.orange)],
+                  const [Colors.yellow],
+                  const [Colors.blue],
                   [
                     (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
                         ? Styles.prussian
                         : Styles.pacific)
                   ],
                 ],
-                activeFgColor:
-                Styles.blackColor,
+                activeFgColor: Styles.blackColor,
                 inactiveBgColor:
-                CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-                    ? Styles.greyColor
-                    : Styles.prussian,
-                inactiveFgColor:
-                Theme.of(context).textTheme.bodyMedium?.color,
+                    CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                        ? Styles.greyColor
+                        : Styles.prussian,
+                inactiveFgColor: Theme.of(context).textTheme.bodyMedium?.color,
                 totalSwitches: 3,
-
-                labels: const ['Must','Need','Want'],
+                labels: const ['Must', 'Need', 'Want'],
                 onToggle: (index) {
-
                   switch (index) {
                     case 0:
                       setActivityType('Must');
@@ -714,7 +713,6 @@ class AppCubit extends Cubit<AppStates> {
                     default:
                       setActivityType('Need');
                   }
-
                 },
               ),
             ],
@@ -724,4 +722,3 @@ class AppCubit extends Cubit<AppStates> {
     );
   }
 }
-

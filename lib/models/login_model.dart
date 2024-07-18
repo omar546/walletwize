@@ -16,15 +16,12 @@ Instead, it allows the LoginModel constructor to handle null data more gracefull
  the code is null safe, and there is no risk of encountering a "type 'Null' is not a subtype of type 'Map<String, dynamic>'" error.
  */
 
-
-
 class LoginModel {
   bool? status;
   String? message;
   UserData? data;
 
-  LoginModel.formJson(Map<String,dynamic> json)
-  {
+  LoginModel.formJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
@@ -32,7 +29,6 @@ class LoginModel {
     } else {
       data = null;
     }
-
   }
 }
 
@@ -56,18 +52,11 @@ class UserData {
       this.points});
 
   //named constructor
-UserData.formJson(Map<String,dynamic> json)
-{
-  id = json['id'];
-  name = json['name'];
-  email = json['email'];
-  phone = json['phone'];
-  image = json['image'];
-  points = json['points'];
-  credit = json['credit'];
-  token = json['token'];
-
-}
+  UserData.formJson(Map<String, dynamic> json) {
+    id = json['id'];
+    email = json['email'];
+    token = json['token'];
+  }
 // Factory constructor to create UserData object from JSON data
   /*
   Purpose: The primary purpose of a factory constructor is to provide an alternative way to create objects.
@@ -85,12 +74,7 @@ You can use a factory constructor to create a new instance of an object only if 
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(
       id: json['id'],
-      name: json['name'],
       email: json['email'],
-      phone: json['phone'],
-      image: json['image'],
-      points: json['points'],
-      credit: json['credit'],
       token: json['token'],
     );
   }

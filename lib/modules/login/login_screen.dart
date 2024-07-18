@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import '../../layout/home_layout.dart';
 import '../../shared/components/components.dart';
 import '../../shared/components/constants.dart';
@@ -43,13 +42,13 @@ class LoginScreen extends StatelessWidget {
               CacheHelper.saveData(
                       key: 'token', value: state.loginModel.data?.token)
                   .then((value) {
-                    token = state.loginModel.data?.token??'';
-                    if (kDebugMode) {
-                      print(token);
-                    }
-                    if (kDebugMode) {
-                      print('after log in ');
-                    }
+                token = state.loginModel.data?.token ?? '';
+                if (kDebugMode) {
+                  print(token);
+                }
+                if (kDebugMode) {
+                  print('after log in ');
+                }
                 navigateAndFinish(context, HomeLayout());
               });
             } else {
@@ -74,20 +73,43 @@ class LoginScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(mainAxisAlignment: MainAxisAlignment.center,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Column(
-                              mainAxisAlignment:MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Wallet',textAlign: TextAlign.center,
-                                  style: TextStyle(height:1,fontSize: 50, fontFamily: 'quicksand',fontWeight: FontWeight.w900,color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific),
+                                  'Wallet',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      height: 1,
+                                      fontSize: 50,
+                                      fontFamily: 'quicksand',
+                                      fontWeight: FontWeight.w900,
+                                      color: CacheHelper.getData(
+                                                  key: ThemeCubit.themeKey) ==
+                                              0
+                                          ? Styles.prussian
+                                          : Styles.pacific),
                                 ),
                                 Text(
-                                  'Wize',textAlign: TextAlign.center,
-                                  style: TextStyle(height:1,fontSize: 50, fontFamily: 'quicksand',fontWeight: FontWeight.w900,color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific),
+                                  'Wize',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      height: 1,
+                                      fontSize: 50,
+                                      fontFamily: 'quicksand',
+                                      fontWeight: FontWeight.w900,
+                                      color: CacheHelper.getData(
+                                                  key: ThemeCubit.themeKey) ==
+                                              0
+                                          ? Styles.prussian
+                                          : Styles.pacific),
                                 ),
-                                const SizedBox(height: 70,)
+                                const SizedBox(
+                                  height: 70,
+                                )
                               ],
                             ),
                           ],
@@ -95,9 +117,7 @@ class LoginScreen extends StatelessWidget {
                         const Text(
                           'Login',
                           style: TextStyle(
-                            fontSize: 30.0,
-                            fontWeight: FontWeight.bold
-                          ),
+                              fontSize: 30.0, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(
                           height: 5.0,
@@ -173,7 +193,8 @@ class LoginScreen extends StatelessWidget {
                                 }
                               },
                               prefix: Icons.password_rounded,
-                              isPassword: NoteLoginCubit.get(context).isPassword,
+                              isPassword:
+                                  NoteLoginCubit.get(context).isPassword,
                               suffixPressed: () {
                                 NoteLoginCubit.get(context)
                                     .changePasswordVisibility();
@@ -197,11 +218,12 @@ class LoginScreen extends StatelessWidget {
                                           email: emailController.text,
                                           password: passwordController.text);
                                     }
-                                    CacheHelper.saveData(key: 'token', value: 'faketoken');
+                                    CacheHelper.saveData(
+                                        key: 'token', value: 'faketoken');
                                     navigateAndFinish(context, HomeLayout());
                                   }),
                               fallback: (context) =>
-                              const CircularProgressIndicator()),
+                                  const CircularProgressIndicator()),
                         ),
                         const SizedBox(
                           height: 10.0,

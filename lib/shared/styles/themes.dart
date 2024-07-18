@@ -10,7 +10,6 @@ enum AppTheme { Light, Dark }
 class ThemeCubit extends Cubit<ThemeData> {
   static const String themeKey = 'theme';
   ThemeCubit() : super(lightTheme) {
-
     final themeIndex =
         CacheHelper.getData(key: themeKey) ?? AppTheme.Dark.index;
     if (themeIndex == AppTheme.Dark.index) {
@@ -29,6 +28,7 @@ class ThemeCubit extends Cubit<ThemeData> {
       emit(lightTheme);
     }
   }
+
   bool get isDarkTheme => state == darkTheme;
 }
 
@@ -45,22 +45,23 @@ MaterialColor customGum = const MaterialColor(0xFF22AED1, {
   900: Color(0xFF0C64A0),
 });
 
-
 ThemeData lightTheme = ThemeData(
     textSelectionTheme: TextSelectionThemeData(
-        cursorColor: customGum,selectionHandleColor: customGum ,selectionColor: Styles.positive
-
-    ),
+        cursorColor: customGum,
+        selectionHandleColor: customGum,
+        selectionColor: Styles.positive),
     textButtonTheme: TextButtonThemeData(
-        style: ButtonStyle(
-            foregroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                if (states.contains(MaterialState.disabled)) {
-                  return Styles.greyColor; // Color when button is disabled
-                }
-                return Styles.prussian; // Color when button is enabled
-              },
-            ),),),
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+          (Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return Styles.greyColor; // Color when button is disabled
+            }
+            return Styles.prussian; // Color when button is enabled
+          },
+        ),
+      ),
+    ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       elevation: 30,
       backgroundColor: Styles.whiteColor,
@@ -94,19 +95,22 @@ ThemeData lightTheme = ThemeData(
       labelStyle: const TextStyle(color: Styles.blackColor),
     ));
 ThemeData darkTheme = ThemeData(
-  textSelectionTheme: TextSelectionThemeData(
-      cursorColor: customGum,selectionHandleColor: customGum ,selectionColor: Styles.positive
-  ),
+    textSelectionTheme: TextSelectionThemeData(
+        cursorColor: customGum,
+        selectionHandleColor: customGum,
+        selectionColor: Styles.positive),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
         foregroundColor: MaterialStateProperty.resolveWith<Color>(
-              (Set<MaterialState> states) {
+          (Set<MaterialState> states) {
             if (states.contains(MaterialState.disabled)) {
               return Styles.greyColor; // Color when button is disabled
             }
             return Styles.pacific; // Color when button is enabled
           },
-        ),),),
+        ),
+      ),
+    ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       elevation: 30,
       backgroundColor: Styles.prussian,
