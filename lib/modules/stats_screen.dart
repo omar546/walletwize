@@ -40,86 +40,109 @@ class StatsScreen extends StatelessWidget {
         builder: (context, state) {
           var cubit = AppCubit.get(context);
           return Scaffold(
-            body: ConditionalBuilder(
-              condition: cubit.mustCount!=0,
-              fallback: (context)=> const Center(child: Opacity(opacity:0.3,child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.hourglass_empty_rounded,size: 50),
-                  Text('no data')
-                ],
-              ))),
-              builder:(context)=> SingleChildScrollView(
+            body:
+              SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 physics: const BouncingScrollPhysics(),
-                child: Column(
+                child: Center(
+                  child: Column(
 
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 40,),
-                    Text('You spend your money on:',style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),),
-                    const SizedBox(height: 10,),
-                    AspectRatio(
-                      aspectRatio: 16/9,
-                      child: DChartPieO(
-                        configRenderPie:  ConfigRenderPie(arcWidth: 40,arcLabelDecorator: ArcLabelDecorator(leaderLineStyle:ArcLabelLeaderLineStyle(color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.whiteColor, length: 25, thickness: 2),outsideLabelStyle:LabelStyle(color:CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.whiteColor),labelPosition: ArcLabelPosition.outside)),
-                        data: [
-                          OrdinalData(
-                              domain: 'Musts',
-                              measure: cubit.mustCount,
-                              color: Colors.orange),
-                          OrdinalData(
-                              domain: 'Needs',
-                              measure: cubit.needCount,
-                              color: Colors.yellow),
-                          OrdinalData(
-                              domain: 'Wants',
-                              measure: cubit.wantCount,
-                              color: Styles.pacific),
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 40,),
+                      Text('You spend your money on:',style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),),
+                      const SizedBox(height: 10,),
+                      ConditionalBuilder(
+                        condition: cubit.mustCount !=0 || cubit.needCount !=0 ||cubit.wantCount !=0,
+                        fallback: (context)=> Opacity(opacity:0.3,child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.hourglass_empty_rounded,size: 50),
+                            Text('no data')
+                          ],
+                        )),
+                        builder:(context)=> AspectRatio(
+                          aspectRatio: 16/9,
+                          child: DChartPieO(
+                            configRenderPie:  ConfigRenderPie(arcWidth: 40,arcLabelDecorator: ArcLabelDecorator(leaderLineStyle:ArcLabelLeaderLineStyle(color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.whiteColor, length: 25, thickness: 2),outsideLabelStyle:LabelStyle(color:CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.whiteColor),labelPosition: ArcLabelPosition.outside)),
+                            data: [
+                              OrdinalData(
+                                  domain: 'Musts',
+                                  measure: cubit.mustCount,
+                                  color: Colors.orange),
+                              OrdinalData(
+                                  domain: 'Needs',
+                                  measure: cubit.needCount,
+                                  color: Colors.yellow),
+                              OrdinalData(
+                                  domain: 'Wants',
+                                  measure: cubit.wantCount,
+                                  color: Styles.pacific),
 
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 40,),
-                    Text('And this is the Trend:',style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),),
-
-                    Padding(
-                      padding: const EdgeInsets.only(left: 35.0),
-                      child: AspectRatio(
-                        aspectRatio: 16/9,
-                        child: DChartLineT(measureAxis: MeasureAxis(labelStyle: LabelStyle(color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.whiteColor)),domainAxis: DomainAxis(labelStyle: LabelStyle(color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.whiteColor)),allowSliding:true,groupList: [TimeGroup(
-                          id: '1',
-                          chartType: ChartType.line,
-                          color:CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific ,
-                          data: timeList,
-
+                            ],
+                          ),
                         ),
-                          ]),
                       ),
+                      const SizedBox(height: 40,),
+                      Text('And this is the Trend:',style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),),
+
+                      ConditionalBuilder(
+                        condition: cubit.newTransactions.isNotEmpty,
+                        fallback: (context)=> Opacity(opacity:0.3,child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.hourglass_empty_rounded,size: 50),
+                            Text('no data')
+                          ],
+                        )),
+
+                        builder:(context)=> Padding(
+                          padding: const EdgeInsets.only(left: 35.0),
+                          child: AspectRatio(
+                            aspectRatio: 16/9,
+                            child: DChartLineT(measureAxis: MeasureAxis(labelStyle: LabelStyle(color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.whiteColor)),domainAxis: DomainAxis(labelStyle: LabelStyle(color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.whiteColor)),allowSliding:true,groupList: [TimeGroup(
+                              id: '1',
+                              chartType: ChartType.line,
+                              color:CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific ,
+                              data: timeList,
+
+                            ),
+                              ]),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 60,),
+                      Text('You use those sources often:',style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),),
+                      const SizedBox(height: 20,),
+                      ConditionalBuilder(
+                        condition: cubit.newSources.isNotEmpty,
+                        fallback: (context)=> Opacity(opacity:0.3,child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.hourglass_empty_rounded,size: 50),
+                            Text('no data')
+                          ],
+                        )),
+                    builder:(context)=> Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 35.0),
+                          child: AspectRatio(
+                            aspectRatio: 16/9,
+                            child: DChartBarCustom(
+                              spaceDomainLabeltoChart: 10,
+                                radiusBar: const BorderRadius.only(
+                                    topLeft: Radius.circular(8),
+                                    topRight: Radius.circular(8),),
+                              showDomainLabel: true,
+                                listData: listData
+                            )
                     ),
-                    const SizedBox(height: 60,),
-                    Text('You use those sources often:',style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),),
-                    const SizedBox(height: 20,),
-                Padding(
-                      padding: const EdgeInsets.only(left: 35.0),
-                      child: AspectRatio(
-                        aspectRatio: 16/9,
-                        child: DChartBarCustom(
-                          spaceDomainLabeltoChart: 10,
-                            radiusBar: const BorderRadius.only(
-                                topLeft: Radius.circular(8),
-                                topRight: Radius.circular(8),),
-                          showDomainLabel: true,
-                            listData: listData
-                        )
-),
-                      ),
-                    const SizedBox(height: 100,),
-                  ],
-                ),
-              ),
-            ),
-          );
+                          ),
+                  ),
+                      const SizedBox(height: 100,),
+                    ],
+                  ),
+                ),));
+
         });
   }
 }
