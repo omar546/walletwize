@@ -3,6 +3,7 @@ import 'package:d_chart/d_chart.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../shared/cubit/cubit.dart';
 import '../shared/network/local/cache_helper.dart';
@@ -15,11 +16,6 @@ class StatsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    List<TimeData> timeList = AppCubit.get(context).newTransactions.map((transaction) {
-      DateTime date = AppCubit.get(context).parseDate(transaction['date']);
-      double amount = transaction['amount'].toDouble();
-      return TimeData(domain: date, measure: amount);
-    }).toList();
 
     Map<String, int> sourceCounts = {};
     for (var transaction in AppCubit.get(context).newTransactions) {
@@ -31,10 +27,26 @@ class StatsScreen extends StatelessWidget {
       }
     }
 
-    // Step 3: Create the list of DChartBarDataCustom objects
     List<DChartBarDataCustom> listData = sourceCounts.entries.map((entry) {
       return DChartBarDataCustom(color:const Color(0xFFCFBAE1),value: entry.value.toDouble(), label: entry.key);
     }).toList();
+
+    Map<String, int> dayCounts = {};
+    for (var transaction in AppCubit.get(context).newTransactions) {
+      DateTime date = DateFormat.yMMMd().parse(transaction['date']);
+      String day = DateFormat.E().format(date);
+      if (dayCounts.containsKey(day)) {
+        dayCounts[day] = dayCounts[day]! + 1;
+      } else {
+        dayCounts[day] = 1;
+      }
+    }
+
+    List<DChartBarDataCustom> dayData = dayCounts.entries.map((entry) {
+      return DChartBarDataCustom(color:Styles.pacific,value: entry.value.toDouble(), label: entry.key);
+    }).toList();
+
+
     return BlocConsumer<ThemeCubit, ThemeData>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -84,8 +96,8 @@ class StatsScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 40,),
-                      Text('And this is the Trend:',style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),),
-
+                      Text('This is the Trend:',style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color,fontFamily: 'Quicksand',fontWeight: FontWeight.bold),),
+                      const SizedBox(height: 10,),
                       ConditionalBuilder(
                         condition: cubit.newTransactions.isNotEmpty,
                         fallback: (context)=> Opacity(opacity:0.3,child: Column(
@@ -97,17 +109,22 @@ class StatsScreen extends StatelessWidget {
                         )),
 
                         builder:(context)=> Padding(
-                          padding: const EdgeInsets.only(left: 35.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 35.0),
                           child: AspectRatio(
-                            aspectRatio: 16/9,
-                            child: DChartLineT(measureAxis: MeasureAxis(labelStyle: LabelStyle(color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.whiteColor)),domainAxis: DomainAxis(labelStyle: LabelStyle(color: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.whiteColor)),allowSliding:true,groupList: [TimeGroup(
-                              id: '1',
-                              chartType: ChartType.line,
-                              color:CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific ,
-                              data: timeList,
+                              aspectRatio: 16/9,
+                              child: DChartBarCustom(
 
-                            ),
-                              ]),
+                                verticalDirection: true,
+                                  spaceDomainLabeltoChart: 10,
+                                  radiusBar: const BorderRadius.only(
+                                    bottomRight: Radius.circular(8),
+                                    topRight: Radius.circular(8),),
+                                  showDomainLabel: true,
+                                  spaceMeasureLabeltoChart: 10,
+
+
+                                  listData: dayData
+                              )
                           ),
                         ),
                       ),
@@ -138,7 +155,7 @@ class StatsScreen extends StatelessWidget {
                     ),
                           ),
                   ),
-                      const SizedBox(height: 100,),
+                      const SizedBox(height: 150,),
                     ],
                   ),
                 ),));

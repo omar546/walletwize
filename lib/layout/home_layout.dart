@@ -29,6 +29,8 @@ class HomeLayout extends StatelessWidget {
           return Scaffold(
             extendBody: true,
             appBar: AppBar(
+              surfaceTintColor: Colors.transparent,
+              elevation: 0,
               leading: IconButton(
                 icon: const Icon(Icons.person),
                 onPressed: () {cubit.showSettingPrompt(context);},
