@@ -29,18 +29,8 @@ Widget buildHistoryItem({required Map model, context, required index}) =>
                 style: const TextStyle(
                     fontFamily: 'Quicksand', fontWeight: FontWeight.bold),
               ),
-              if(model['type']=='decrease')
               const Spacer(),
-              if(model['type']=='decrease')
-              Text(
-                model['activity'] == 'Must'
-                    ?
-                '🟠'
-                    : ((model['activity'] == 'Need')?
-                '🟡'
-                    :'🔵'),
-              ),
-              const Spacer(),
+
               Text(
                 model['amount'].toString().length > 9
                     ? '${AppCubit.get(context).currency} ${model['amount'].toString().substring(0, 4)}...'

@@ -48,9 +48,9 @@ class AppCubit extends Cubit<AppStates> {
   late Database database;
   List<Map> newTransactions = [];
   List<Map> newSources = [];
-  double mustCount=0;
-  double needCount=0;
-  double wantCount=0;
+  double mustCount= CacheHelper.getData(key: 'musts')??0;
+  double needCount=CacheHelper.getData(key: 'needs')??0;
+  double wantCount=CacheHelper.getData(key: 'wants')??0;
 
 
   void createDatabase() {
@@ -486,11 +486,15 @@ class AppCubit extends Cubit<AppStates> {
     if (positiveTrans) {
       newBalance += transactionAmount;
     } else {
-      newBalance -= transactionAmount;
+      transactionAmount = -transactionAmount;
+      newBalance += transactionAmount;
       if(activityType == 'Must'){
         mustCount+=1;
-      }else{if(activityType == 'Want'){wantCount+=1;}else{
+        CacheHelper.saveData(key: 'musts', value: mustCount);
+      }else{if(activityType == 'Want'){wantCount+=1;
+      CacheHelper.saveData(key: 'wants', value: wantCount);}else{
         needCount +=1;
+        CacheHelper.saveData(key: 'needs', value: needCount);
       }}
     }
 
@@ -652,9 +656,9 @@ class AppCubit extends Cubit<AppStates> {
         return AlertDialog(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           title: Text(
-            'Type',
+            'Type',textAlign: TextAlign.center,
             style:
-            TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color),
+            TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color,),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -718,6 +722,9 @@ class AppCubit extends Cubit<AppStates> {
         );
       },
     );
+  }
+  DateTime parseDate(String dateStr) {
+    return DateFormat.yMMMd().parse(dateStr);
   }
 }
 
