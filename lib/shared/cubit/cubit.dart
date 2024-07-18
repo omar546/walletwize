@@ -48,9 +48,9 @@ class AppCubit extends Cubit<AppStates> {
   late Database database;
   List<Map> newTransactions = [];
   List<Map> newSources = [];
-  double mustCount = CacheHelper.getData(key: 'musts') ?? 0;
-  double needCount = CacheHelper.getData(key: 'needs') ?? 0;
-  double wantCount = CacheHelper.getData(key: 'wants') ?? 0;
+  double mustCount = CacheHelper.getData(key: 'musts') ?? 0.0;
+  double needCount = CacheHelper.getData(key: 'needs') ?? 0.0;
+  double wantCount = CacheHelper.getData(key: 'wants') ?? 0.0;
 
   void createDatabase() {
     openDatabase(
@@ -92,148 +92,6 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   var formKey = GlobalKey<FormState>();
-  // void showSourceValueUpdatePrompt(
-  //     {required int id,
-  //     required String source,
-  //     required double balance,
-  //     required String type,
-  //     required BuildContext context}) {
-  //   addSourceController.text = source;
-  //   addSourceTypeController.text = type;
-  //   showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           backgroundColor:
-  //               Theme.of(context).scaffoldBackgroundColor.withOpacity(0.95),
-  //           title: Text(
-  //             'Edit Source',
-  //             style: TextStyle(
-  //                 color: Theme.of(context).textTheme.bodyMedium?.color),
-  //           ),
-  //           content: Form(
-  //             key: formKey,
-  //             child: Column(
-  //               mainAxisSize: MainAxisSize.min,
-  //               children: [
-  //                 customForm(
-  //                   context: context,
-  //                   controller: addSourceController,
-  //                   type: TextInputType.text,
-  //                   label: 'Name *',
-  //                   suffix: Icons.title_rounded,
-  //                   validate: (String? value) {
-  //                     if (value == null || value.isEmpty) {
-  //                       return 'Please type a name';
-  //                     }
-  //                     return null; // Return null to indicate the input is valid
-  //                   },
-  //                 ),
-  //                 // const SizedBox(height: 15),
-  //                 // customForm(
-  //                 //   context: context,
-  //                 //   controller: addSourceBalanceController,
-  //                 //   type: TextInputType.number,
-  //                 //   label: 'balance *',
-  //                 //   suffix: Icons.monetization_on_outlined,
-  //                 //   validate: (String? value) {
-  //                 //     if (value == null || value.isEmpty) {
-  //                 //       return 'Please type a balance';
-  //                 //     }
-  //                 //     return null; // Return null to indicate the input is valid
-  //                 //   },
-  //                 // ),
-  //                 const SizedBox(height: 15),
-  //                 ToggleSwitch(
-  //                   cornerRadius: 15.0,
-  //                   initialLabelIndex: -1,
-  //                   activeBgColors: [
-  //                     [
-  //                       (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-  //                           ? Styles.prussian
-  //                           : Styles.pacific)
-  //                     ],
-  //                     [
-  //                       (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-  //                           ? Styles.prussian
-  //                           : Styles.pacific)
-  //                     ],
-  //                     [
-  //                       (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-  //                           ? Styles.prussian
-  //                           : Styles.pacific)
-  //                     ]
-  //                   ],
-  //                   activeFgColor:
-  //                       CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-  //                           ? Styles.whiteColor
-  //                           : Styles.blackColor,
-  //                   inactiveBgColor:
-  //                       CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-  //                           ? Styles.greyColor
-  //                           : Styles.prussian,
-  //                   inactiveFgColor:
-  //                       Theme.of(context).textTheme.bodyMedium?.color,
-  //                   totalSwitches: 3,
-  //                   icons: const [
-  //                     Icons.account_balance,
-  //                     Icons.credit_card,
-  //                     Icons.money
-  //                   ],
-  //                   onToggle: (index) {
-  //                     switch (index) {
-  //                       case 0:
-  //                         addSourceTypeController.text = 'bank';
-  //                         break;
-  //                       case 1:
-  //                         addSourceTypeController.text = 'card';
-  //                         break;
-  //                       case 2:
-  //                         addSourceTypeController.text = 'cash';
-  //                         break;
-  //                       default:
-  //                         addSourceTypeController.text = 'bank';
-  //                     }
-  //                   },
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //           actions: <Widget>[
-  //             ElevatedButton(
-  //                 style: ElevatedButton.styleFrom(
-  //                     backgroundColor:
-  //                         CacheHelper.getData(key: ThemeCubit.themeKey) == 0
-  //                             ? Styles.prussian
-  //                             : Styles.pacific,
-  //                     foregroundColor: Styles.whiteColor),
-  //                 onPressed: () {
-  //                   if (formKey.currentState!.validate()) {
-  //                     database.update(
-  //                         'transactions',
-  //                         {
-  //                           'source': addSourceController.text,
-  //                         },
-  //                         where: 'source = ?',
-  //                         whereArgs: [source]);
-  //                     database.update(
-  //                         'sources',
-  //                         {
-  //                           'source': addSourceController.text,
-  //                           'type': addSourceTypeController.text.toLowerCase(),
-  //                         },
-  //                         where: 'id = ?',
-  //                         whereArgs: [id]);
-  //                     emit(AppInsertDatabaseState());
-  //                     getFromDatabase(database);
-  //                     Navigator.of(context).pop();
-  //                   }
-  //                 },
-  //                 child: const Text('Ok!'))
-  //           ],
-  //         );
-  //       });
-  // }
 
   void showSourcePrompt(BuildContext context) {
     showDialog(
