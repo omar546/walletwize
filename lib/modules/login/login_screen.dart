@@ -103,7 +103,7 @@ class LoginScreen extends StatelessWidget {
                           height: 5.0,
                         ),
                         const Text(
-                          'Join now to take notes!',
+                          'Join now to Track Expenses!',
                           style: TextStyle(fontSize: 16),
                         ),
                         const SizedBox(

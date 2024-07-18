@@ -76,7 +76,7 @@ class RegisterScreen extends StatelessWidget {
                               height: 5.0,
                             ),
                             const Text(
-                              'Leverage your note taking experience!',
+                              'Leverage your Expense tracking taking experience!',
                               style: TextStyle(fontSize: 16),
                             ),
                             const SizedBox(
