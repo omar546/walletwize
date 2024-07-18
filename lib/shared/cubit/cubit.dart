@@ -723,8 +723,5 @@ class AppCubit extends Cubit<AppStates> {
       },
     );
   }
-  DateTime parseDate(String dateStr) {
-    return DateFormat.yMMMd().parse(dateStr);
-  }
 }
 
