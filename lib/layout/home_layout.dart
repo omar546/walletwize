@@ -62,7 +62,7 @@ class HomeLayout extends StatelessWidget {
                               child: const Text("Cancel"),
                             ),
                             TextButton(
-                              onPressed: () { Navigator.of(context).pop();cubit.deleteAllTransaction();},
+                              onPressed: () { Navigator.of(context).pop();cubit.mustCount = 0;cubit.needCount = 0;cubit.wantCount = 0;cubit.deleteAllTransaction();},
                               child: const Text("Delete"),
                             ),
                           ],

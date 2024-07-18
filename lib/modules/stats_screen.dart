@@ -33,7 +33,7 @@ class StatsScreen extends StatelessWidget {
 
     // Step 3: Create the list of DChartBarDataCustom objects
     List<DChartBarDataCustom> listData = sourceCounts.entries.map((entry) {
-      return DChartBarDataCustom(color:Color(0xFFCFBAE1),value: entry.value.toDouble(), label: entry.key);
+      return DChartBarDataCustom(color:const Color(0xFFCFBAE1),value: entry.value.toDouble(), label: entry.key);
     }).toList();
     return BlocConsumer<ThemeCubit, ThemeData>(
         listener: (context, state) {},
@@ -42,7 +42,13 @@ class StatsScreen extends StatelessWidget {
           return Scaffold(
             body: ConditionalBuilder(
               condition: cubit.mustCount!=0,
-              fallback: (context)=> const Icon(Icons.hourglass_empty_rounded),
+              fallback: (context)=> const Center(child: Opacity(opacity:0.3,child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.hourglass_empty_rounded,size: 50),
+                  Text('no data')
+                ],
+              ))),
               builder:(context)=> SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 physics: const BouncingScrollPhysics(),
