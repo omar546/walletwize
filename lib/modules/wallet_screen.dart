@@ -193,78 +193,82 @@ class WalletScreen extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     ClipRect(
-                                      child: Row(
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                'Total Balance',
-                                                style: TextStyle(
-                                                  fontFamily: 'Quicksand',
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15,
+                                      child: Align(
+                                        alignment:Alignment.centerLeft,
+                                        widthFactor: MediaQuery.sizeOf(context).width*0.4,
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                  'Total Balance',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Quicksand',
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              FutureBuilder<double>(
-                                                future: cubit.getBalanceSum(),
-                                                builder: (context, snapshot) {
-                                                  if (snapshot.connectionState ==
-                                                      ConnectionState.waiting) {
-                                                    return const SizedBox();
-                                                  } else if (snapshot.hasError) {
-                                                    return Text(
-                                                        'Error: ${snapshot.error}');
-                                                  } else {
-                                                    return Text(
-                                                      '${cubit.currency} ${snapshot.data?.toStringAsFixed(2)}',
-                                                      style: const TextStyle(
-                                                        fontFamily: 'Quicksand',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 25,
-                                                      ),
-                                                    );
-                                                  }
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                          const Spacer(),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Icon(
-                                                (cubit.changePercentage > 0)
-                                                    ? Icons
-                                                        .arrow_circle_up_rounded
-                                                    : Icons
-                                                        .arrow_circle_down_rounded,
-                                                color:
-                                                    (cubit.changePercentage > 0)
-                                                        ? Styles.positive
-                                                        : Styles.negative,
-                                                size: 30,
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                '${cubit.changePercentage} %',
-                                                style: const TextStyle(
-                                                  fontFamily: 'Quicksand',
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12,
+                                                const SizedBox(
+                                                  height: 10,
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                                FutureBuilder<double>(
+                                                  future: cubit.getBalanceSum(),
+                                                  builder: (context, snapshot) {
+                                                    if (snapshot.connectionState ==
+                                                        ConnectionState.waiting) {
+                                                      return const SizedBox();
+                                                    } else if (snapshot.hasError) {
+                                                      return Text(
+                                                          'Error: ${snapshot.error}');
+                                                    } else {
+                                                      return Text(
+                                                        '${cubit.currency} ${snapshot.data?.toStringAsFixed(2)}',
+                                                        style: const TextStyle(
+                                                          fontFamily: 'Quicksand',
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 25,
+                                                        ),
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                            const Spacer(),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                Icon(
+                                                  (cubit.changePercentage > 0)
+                                                      ? Icons
+                                                          .arrow_circle_up_rounded
+                                                      : Icons
+                                                          .arrow_circle_down_rounded,
+                                                  color:
+                                                      (cubit.changePercentage > 0)
+                                                          ? Styles.positive
+                                                          : Styles.negative,
+                                                  size: 30,
+                                                ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  '${cubit.changePercentage} %',
+                                                  style: const TextStyle(
+                                                    fontFamily: 'Quicksand',
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                     const Icon(

@@ -47,7 +47,7 @@ class LoginScreen extends StatelessWidget {
           if (state is WalletLoginErrorState) {
             debugPrint(state.error);
 
-            showToast(message: state.error ?? '', state: ToastStates.ERROR);
+            showToast(message: state.error, state: ToastStates.ERROR);
           }
         },
         builder: (context, state) {
