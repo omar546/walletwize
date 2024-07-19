@@ -1,25 +1,25 @@
 
 import '../../../models/login_model.dart';
 
-abstract class NoteLoginStates {}
+abstract class WalletLoginStates {}
 
-class NoteLoginInitialState extends NoteLoginStates {}
+class WalletLoginInitialState extends WalletLoginStates {}
 
 
-class NoteLoginLoadingState extends NoteLoginStates {}
+class WalletLoginLoadingState extends WalletLoginStates {}
 
-class NoteLoginSuccessState extends NoteLoginStates
+class WalletLoginSuccessState extends WalletLoginStates
 {
   final LoginModel loginModel;
 
-  NoteLoginSuccessState(this.loginModel);
+  WalletLoginSuccessState(this.loginModel);
 
 }
 
-class NoteLoginErrorState extends NoteLoginStates {
+class WalletLoginErrorState extends WalletLoginStates {
   final String error;
 
-  NoteLoginErrorState(this.error);
+  WalletLoginErrorState(this.error);
 }
-class NoteChangePasswordVisibilityState extends NoteLoginStates {}
-class NoteChangeAgreement extends NoteLoginStates {}
+class NoteChangePasswordVisibilityState extends WalletLoginStates {}
+class NoteChangeAgreement extends WalletLoginStates {}

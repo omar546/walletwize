@@ -367,7 +367,7 @@ Widget customForm({
     onFieldSubmitted: onSubmit,
     onChanged: onChange,
     validator: validate,
-    decoration: InputDecoration(
+    decoration: InputDecoration(errorStyle: const TextStyle(color: Styles.negative),
       labelText: label,
       prefixIcon: Icon(
         prefix,

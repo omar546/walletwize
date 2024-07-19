@@ -2,11 +2,9 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:walletwize/modules/login/login_screen.dart';
 
-import '../../layout/home_layout.dart';
 import '../../shared/components/components.dart';
-import '../../shared/components/constants.dart';
-import '../../shared/network/local/cache_helper.dart';
 import 'cubit/register_cubit.dart';
 import 'cubit/register_states.dart';
 
@@ -14,12 +12,10 @@ class RegisterScreen extends StatelessWidget {
   var formKey = GlobalKey<FormState>();
 
   var emailController = TextEditingController();
-  var nameController = TextEditingController();
 
   var passwordController = TextEditingController();
   var passwordController2 = TextEditingController();
 
-  var phoneController = TextEditingController();
 
   RegisterScreen({super.key});
 
@@ -27,31 +23,19 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) =>
-          RegisterCubit(ShopRegisterInitialState()),
-      child: BlocConsumer<RegisterCubit, ShopRegisterStates>(
+          RegisterCubit(WalletRegisterInitialState()),
+      child: BlocConsumer<RegisterCubit, WalletRegisterStates>(
         listener: (context, state) {
-          if (state is ShopRegisterSuccessState) {
-            if (state.loginModel.status ?? false) {
-              if (kDebugMode) {
-                print(state.loginModel.message);
-              }
-              if (kDebugMode) {
-                print(state.loginModel.data?.token);
-              }
-              CacheHelper.saveData(
-                      key: 'token', value: state.loginModel.data?.token)
-                  .then((value) {
-                token = state.loginModel.data?.token ?? '';
-                navigateAndFinish(context, HomeLayout());
-              });
-            } else {
-              if (kDebugMode) {
-                print(state.loginModel.message);
-              }
-              showToast(
-                  message: state.loginModel.message ?? '',
-                  state: ToastStates.ERROR);
-            }
+          if(state is WalletRegisterSuccessState){
+            showToast(
+                message: state.message,
+                state: ToastStates.SUCCESS);
+            navigateTo(context, LoginScreen());
+          }
+          if(state is WalletRegisterErrorState){
+            showToast(
+                message: state.error,
+                state: ToastStates.ERROR);
           }
         },
         builder: (context, state) {
@@ -82,33 +66,7 @@ class RegisterScreen extends StatelessWidget {
                         const SizedBox(
                           height: 40.0,
                         ),
-                        customForm(
-                          context: context,
-                          label: 'User Name',
-                          controller: nameController,
-                          type: TextInputType.name,
-                          onSubmit: (String value) {
-                            if (kDebugMode) {
-                              print(value);
-                            }
-                          },
-                          onChange: (String value) {
-                            if (kDebugMode) {
-                              print(value);
-                            }
-                          },
-                          validate: (value) {
-                            if (value!.isEmpty) {
-                              return "name..please!";
-                            } else {
-                              return null;
-                            }
-                          },
-                          prefix: Icons.person_outline,
-                        ),
-                        const SizedBox(
-                          height: 15.0,
-                        ),
+
                         customForm(
                           context: context,
                           label: 'Email Address',
@@ -139,7 +97,7 @@ class RegisterScreen extends StatelessWidget {
                         customForm(
                           context: context,
                           label: 'Password',
-                          controller: passwordController,
+                          controller: passwordController2,
                           type: TextInputType.visiblePassword,
                           suffix: RegisterCubit.get(context).suffix,
                           onChange: (String value) {
@@ -175,8 +133,6 @@ class RegisterScreen extends StatelessWidget {
                                   passwordController.text) {
                                 RegisterCubit.get(context).userRegister(
                                   email: emailController.text,
-                                  name: nameController.text,
-                                  phone: phoneController.text,
                                   password: passwordController.text,
                                 );
                               } else {
@@ -234,19 +190,18 @@ class RegisterScreen extends StatelessWidget {
                         ),
                         Center(
                           child: ConditionalBuilder(
-                              condition: state is! ShopRegisterLoadingState,
+                              condition: state is! WalletRegisterLoadingState,
                               builder: (context) => customButton(
                                   widthRatio: 0.6,
                                   context: context,
                                   text: "REGISTER",
                                   onPressed: () {
+                                    if(passwordController.text == passwordController2.text){
                                     if (formKey.currentState!.validate()) {
                                       RegisterCubit.get(context).userRegister(
-                                          name: nameController.text,
                                           email: emailController.text,
-                                          phone: phoneController.text,
                                           password: passwordController.text);
-                                    }
+                                    }}
                                   }),
                               fallback: (context) =>
                                   const CircularProgressIndicator()),

@@ -1,26 +1,25 @@
 
-import '../../../models/login_model.dart';
 
-abstract class ShopRegisterStates {}
+abstract class WalletRegisterStates {}
 
-class ShopRegisterInitialState extends ShopRegisterStates {
-  ShopRegisterInitialState();
+class WalletRegisterInitialState extends WalletRegisterStates {
+  WalletRegisterInitialState();
 }
 
 
-class ShopRegisterLoadingState extends ShopRegisterStates {}
+class WalletRegisterLoadingState extends WalletRegisterStates {}
 
-class ShopRegisterSuccessState extends ShopRegisterStates
+class WalletRegisterSuccessState extends WalletRegisterStates
 {
-  final LoginModel loginModel;
+  final String message;
 
-  ShopRegisterSuccessState(this.loginModel);
+  WalletRegisterSuccessState(this.message);
 
 }
 
-class ShopRegisterErrorState extends ShopRegisterStates {
+class WalletRegisterErrorState extends WalletRegisterStates {
   final String error;
 
-  ShopRegisterErrorState(this.error);
+  WalletRegisterErrorState(this.error);
 }
-class ShopRegChangePasswordVisibilityState extends ShopRegisterStates {}
+class WalletRegChangePasswordVisibilityState extends WalletRegisterStates {}

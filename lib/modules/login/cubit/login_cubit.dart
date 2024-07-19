@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,36 +9,38 @@ import '../../../shared/network/end_points.dart';
 import '../../../shared/network/remote/dio_helper.dart';
 import 'login_states.dart';
 
-class NoteLoginCubit extends Cubit<NoteLoginStates>{
-  NoteLoginCubit(super.initialState);
+class WalletLoginCubit extends Cubit<WalletLoginStates>{
+  WalletLoginCubit(super.initialState);
 
-static NoteLoginCubit get(context) => BlocProvider.of(context);
+static WalletLoginCubit get(context) => BlocProvider.of(context);
 
 late LoginModel loginModel;
-  bool agreement = false;
 
 void userLogin({
   required String email,
   required String password,
 })
 {
-  emit(NoteLoginLoadingState());
+  emit(WalletLoginLoadingState());
 
-  DioHelper2.postData(url: LOGIN, data:
+  DioHelper.postData(url: LOGIN, data:
   {
-   'email':email,
-    'password':password,
+   "email":email,
+    "password":password,
   }).then((value){
     if (kDebugMode) {
       print(value.data);
     }
-    loginModel = LoginModel.formJson(value.data);
-    emit(NoteLoginSuccessState(loginModel));
+    loginModel = LoginModel.fromJson(value.data);
+    emit(WalletLoginSuccessState(loginModel));
   }).catchError((error){
-    if (kDebugMode) {
-      print(error.toString());
+    if (error is DioException) {
+      emit(WalletLoginErrorState(error.response!.data.toString()));
+    } else {
+      emit(WalletLoginErrorState(error.toString()));
     }
-    emit(NoteLoginErrorState(error.toString()));
+
+
   });
 }
   IconData suffix = Icons.visibility_outlined;
@@ -50,10 +53,5 @@ void userLogin({
 
     emit(NoteChangePasswordVisibilityState());
   }
-  void changeAgreement(){
-    agreement = !agreement;
-    emit(NoteChangeAgreement());
-  }
-
 
 }

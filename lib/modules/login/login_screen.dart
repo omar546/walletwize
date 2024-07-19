@@ -20,6 +20,7 @@ class LoginScreen extends StatelessWidget {
   var passwordController = TextEditingController();
 
   var formKey = GlobalKey<FormState>();
+  var loginKey = GlobalKey<FormState>();
 
   bool isPassword = true;
 
@@ -28,37 +29,25 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => NoteLoginCubit(NoteLoginInitialState()),
-      child: BlocConsumer<NoteLoginCubit, NoteLoginStates>(
+      create: (BuildContext context) =>
+          WalletLoginCubit(WalletLoginInitialState()),
+      child: BlocConsumer<WalletLoginCubit, WalletLoginStates>(
         listener: (context, state) {
-          if (state is NoteLoginSuccessState) {
-            if (state.loginModel.status ?? false) {
-              if (kDebugMode) {
-                print(state.loginModel.message);
-              }
-              if (kDebugMode) {
-                print(state.loginModel.data?.token);
-              }
+          if (state is WalletLoginSuccessState) {
+
               CacheHelper.saveData(
-                      key: 'token', value: state.loginModel.data?.token)
+                      key: 'token', value: state.loginModel.token)
                   .then((value) {
-                token = state.loginModel.data?.token ?? '';
-                if (kDebugMode) {
-                  print(token);
-                }
-                if (kDebugMode) {
-                  print('after log in ');
-                }
+                token = state.loginModel.token ?? '';
+
                 navigateAndFinish(context, HomeLayout());
               });
-            } else {
-              if (kDebugMode) {
-                print(state.loginModel.message);
-              }
-              showToast(
-                  message: state.loginModel.message ?? '',
-                  state: ToastStates.ERROR);
-            }
+
+          }
+          if (state is WalletLoginErrorState) {
+            debugPrint(state.error);
+
+            showToast(message: state.error ?? '', state: ToastStates.ERROR);
           }
         },
         builder: (context, state) {
@@ -68,7 +57,7 @@ class LoginScreen extends StatelessWidget {
               child: Center(
                 child: SingleChildScrollView(
                   child: Form(
-                    key: formKey,
+                    key: loginKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -171,10 +160,10 @@ class LoginScreen extends StatelessWidget {
                               label: 'Password',
                               controller: passwordController,
                               type: TextInputType.visiblePassword,
-                              suffix: NoteLoginCubit.get(context).suffix,
+                              suffix: WalletLoginCubit.get(context).suffix,
                               onSubmit: (value) {
                                 if (formKey.currentState!.validate()) {
-                                  NoteLoginCubit.get(context).userLogin(
+                                  WalletLoginCubit.get(context).userLogin(
                                     email: emailController.text,
                                     password: passwordController.text,
                                   );
@@ -188,15 +177,13 @@ class LoginScreen extends StatelessWidget {
                               validate: (value) {
                                 if (value!.isEmpty) {
                                   return "forgot your password!";
-                                } else {
-                                  return null;
                                 }
                               },
                               prefix: Icons.password_rounded,
                               isPassword:
-                                  NoteLoginCubit.get(context).isPassword,
+                                  WalletLoginCubit.get(context).isPassword,
                               suffixPressed: () {
-                                NoteLoginCubit.get(context)
+                                WalletLoginCubit.get(context)
                                     .changePasswordVisibility();
                               },
                             ),
@@ -207,20 +194,17 @@ class LoginScreen extends StatelessWidget {
                         ),
                         Center(
                           child: ConditionalBuilder(
-                              condition: state is! NoteLoginLoadingState,
+                              condition: state is! WalletLoginLoadingState,
                               builder: (context) => customButton(
                                   widthRatio: 0.6,
                                   context: context,
                                   text: "LOGIN",
                                   onPressed: () {
-                                    if (formKey.currentState!.validate()) {
-                                      NoteLoginCubit.get(context).userLogin(
+                                    if (loginKey.currentState!.validate()) {
+                                      WalletLoginCubit.get(context).userLogin(
                                           email: emailController.text,
                                           password: passwordController.text);
                                     }
-                                    CacheHelper.saveData(
-                                        key: 'token', value: 'faketoken');
-                                    navigateAndFinish(context, HomeLayout());
                                   }),
                               fallback: (context) =>
                                   const CircularProgressIndicator()),

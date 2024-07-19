@@ -21,7 +21,6 @@ void main() async {
 
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
-  DioHelper2.init();
 
   await CacheHelper.init();
   Widget widget;
