@@ -5,4 +5,4 @@ void printFullText(String? text)
   pattern.allMatches(text!).forEach((match) => print(match.group(0)));
 }
 
-late String token;
+late String? token;

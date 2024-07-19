@@ -38,7 +38,7 @@ class LoginScreen extends StatelessWidget {
               CacheHelper.saveData(
                       key: 'token', value: state.loginModel.token)
                   .then((value) {
-                token = state.loginModel.token ?? '';
+                token = state.loginModel.token;
 
                 navigateAndFinish(context, HomeLayout());
               });
@@ -204,6 +204,7 @@ class LoginScreen extends StatelessWidget {
                                       WalletLoginCubit.get(context).userLogin(
                                           email: emailController.text,
                                           password: passwordController.text);
+                                    debugPrint(token);
                                     }
                                   }),
                               fallback: (context) =>

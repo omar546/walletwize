@@ -25,12 +25,12 @@ void main() async {
   await CacheHelper.init();
   Widget widget;
   bool onBoarding = CacheHelper.getData(key: 'onBoarding') ?? false;
-  token = CacheHelper.getData(key: 'token') ?? 'null';
+  token = CacheHelper.getData(key: 'token');
   if (kDebugMode) {
     print(token);
   }
   if (onBoarding != false) {
-    if (token != 'null') {
+    if (token != null) {
       widget = BlocProvider(
         create: (context) => AppCubit()..createDatabase(),
         child: HomeLayout(),

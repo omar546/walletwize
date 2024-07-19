@@ -52,6 +52,7 @@ dependencies:
   toggle_switch: ^2.3.0
   fl_chart: ^0.68.0
   d_chart: ^2.6.9
+  socket_io_client: ^2.0.3+1
 
 dev_dependencies:
   flutter_test:

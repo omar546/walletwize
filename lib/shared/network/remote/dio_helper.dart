@@ -23,6 +23,7 @@ class DioHelper {
     String? token,
   }) async {
     dio.options.headers= {
+      if (token != "null") 'Authorization': 'Bearer $token',
     };
     return await dio.get(
       url,
@@ -34,7 +35,7 @@ class DioHelper {
   static Future<Response> postData({
     required String url,
     Map<String, dynamic>? query,
-    required Map<String, dynamic> data,
+     Map<String, dynamic>? data,
     String? token,
   }) async {
     dio.options.headers={

@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:toggle_switch/toggle_switch.dart';
+import 'package:walletwize/shared/components/constants.dart';
+import 'package:walletwize/shared/network/remote/dio_helper.dart';
 import '../../modules/login/login_screen.dart';
 import '../../modules/stats_screen.dart';
 import '../../modules/wallet_screen.dart';
@@ -45,9 +47,60 @@ class AppCubit extends Cubit<AppStates> {
     emit(SheetChangeState());
   }
 
+  Future<void> createTriggersForSqliteTable(Database db) async {
+    final List<String> tables = ["sources", "transactions"];
+
+    for (String tableName in tables) {
+      final List<Map<String, dynamic>> existingTriggers = await db.rawQuery(
+          "SELECT name FROM sqlite_master WHERE type='trigger' AND name LIKE ?",
+          ["before_%_$tableName"]);
+
+      final List<Map<String, dynamic>> triggerDefinitions = [
+        {
+          "name": "before_insert_$tableName",
+          "timing": "BEFORE INSERT",
+          "body": """
+          INSERT INTO change_log (table_name, row_id, operation)
+          VALUES ('$tableName', NEW.id, 'I');
+        """
+        },
+        {
+          "name": "before_update_$tableName",
+          "timing": "BEFORE UPDATE",
+          "body": """
+          INSERT INTO change_log (table_name, row_id, operation)
+          VALUES ('$tableName', NEW.id, 'U');
+        """
+        },
+        {
+          "name": "before_delete_$tableName",
+          "timing": "BEFORE DELETE",
+          "body": """
+          INSERT INTO change_log (table_name, row_id, operation)
+          VALUES ('$tableName', OLD.id, 'D');
+        """
+        },
+      ];
+
+      for (Map<String, dynamic> trigger in triggerDefinitions) {
+        final String createTriggerSql = """
+          CREATE TRIGGER ${trigger['name']}
+          ${trigger['timing']} ON $tableName
+          FOR EACH ROW
+          BEGIN
+            ${trigger['body']}
+          END;
+        """;
+
+        await db.execute(createTriggerSql);
+      }
+    }
+  }
+
   late Database database;
   List<Map> newTransactions = [];
   List<Map> newSources = [];
+  List<Map> changelog = [];
   double mustCount = CacheHelper.getData(key: 'musts') ?? 0.0;
   double needCount = CacheHelper.getData(key: 'needs') ?? 0.0;
   double wantCount = CacheHelper.getData(key: 'wants') ?? 0.0;
@@ -61,9 +114,12 @@ class AppCubit extends Cubit<AppStates> {
             'CREATE TABLE transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, amount REAL,type TEXT,source TEXT, date TEXT,time TEXT,activity TEXT)');
         await db.execute(
             'CREATE TABLE sources (id INTEGER PRIMARY KEY AUTOINCREMENT, source TEXT,type TEXT,balance REAL)');
+        await db.execute(
+            'CREATE TABLE change_log (id INTEGER PRIMARY KEY AUTOINCREMENT, table_name TEXT not null,row_id INTEGER not null,operation CHAR(1) not null,change_time TIMESTAMP default CURRENT_TIMESTAMP,sync_time TIMESTAMP)');
       },
       onOpen: (database) {
         getFromDatabase(database);
+        createTriggersForSqliteTable(database);
       },
     ).then(
       (value) {
@@ -206,7 +262,7 @@ class AppCubit extends Cubit<AppStates> {
     return database.transaction(
       (Transaction txn) async {
         txn.rawInsert(
-          'INSERT INTO sources ( source,type,balance) VALUES(?,?,?)',
+          'INSERT INTO sources (source,type,balance) VALUES(?,?,?)',
           [source, type, balance],
         ).then(
           (value) {
@@ -250,7 +306,7 @@ class AppCubit extends Cubit<AppStates> {
             emit(AppInsertDatabaseState());
             changeBottomNavBarState(0);
             getFromDatabase(database);
-          },
+            },
         );
       },
     );
@@ -383,6 +439,7 @@ class AppCubit extends Cubit<AppStates> {
     double newTotal = await getBalanceSum(); // Get the new total balance
     calculateChangePercentage(oldTotal, newTotal);
 
+
     positiveTrans = true;
 // Calculate the change percentage
 
@@ -497,6 +554,14 @@ class AppCubit extends Cubit<AppStates> {
                   IconButton(
                     tooltip: "Logout",
                     onPressed: () {
+                      DioHelper.postData(
+                        url: 'logout',
+                        token: token,
+                      ).then((value) {
+                        token = null;
+                        CacheHelper.removeData(key: 'token');
+                      });
+
                       navigateAndFinish(context, LoginScreen());
                     },
                     icon: Icon(Icons.logout_rounded,
