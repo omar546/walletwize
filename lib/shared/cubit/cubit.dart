@@ -104,7 +104,6 @@ class AppCubit extends Cubit<AppStates> {
   double mustCount = CacheHelper.getData(key: 'musts') ?? 0.0;
   double needCount = CacheHelper.getData(key: 'needs') ?? 0.0;
   double wantCount = CacheHelper.getData(key: 'wants') ?? 0.0;
-
   void createDatabase() {
     openDatabase(
       'wallet.db',
@@ -116,10 +115,12 @@ class AppCubit extends Cubit<AppStates> {
             'CREATE TABLE sources (id INTEGER PRIMARY KEY AUTOINCREMENT, source TEXT,type TEXT,balance REAL)');
         await db.execute(
             'CREATE TABLE change_log (id INTEGER PRIMARY KEY AUTOINCREMENT, table_name TEXT not null,row_id INTEGER not null,operation CHAR(1) not null,change_time TIMESTAMP default CURRENT_TIMESTAMP,sync_time TIMESTAMP)');
-        createTriggersForSqliteTable(database);
       },
       onOpen: (database) {
         getFromDatabase(database);
+        if (CacheHelper.getData(key: 'triggers') != 'true'){
+        createTriggersForSqliteTable(database);
+        CacheHelper.saveData(key: 'triggers', value: 'true');}
       },
     ).then(
       (value) {
