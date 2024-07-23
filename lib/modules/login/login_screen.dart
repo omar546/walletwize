@@ -200,12 +200,13 @@ class LoginScreen extends StatelessWidget {
                                   context: context,
                                   text: "LOGIN",
                                   onPressed: () {
-                                    if (loginKey.currentState!.validate()) {
-                                      WalletLoginCubit.get(context).userLogin(
-                                          email: emailController.text,
-                                          password: passwordController.text);
-                                    debugPrint(token);
-                                    }
+                                    navigateTo(context, HomeLayout());
+                                    // if (loginKey.currentState!.validate()) {
+                                    //   WalletLoginCubit.get(context).userLogin(
+                                    //       email: emailController.text,
+                                    //       password: passwordController.text);
+                                    // debugPrint(token);
+                                    // }
                                   }),
                               fallback: (context) =>
                                   const CircularProgressIndicator()),

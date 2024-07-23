@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:walletwize/shared/styles/styles.dart';
@@ -69,10 +70,12 @@ class WalletScreen extends StatelessWidget {
                                             FutureBuilder<double>(
                                               future: cubit.getBalanceSum(),
                                               builder: (context, snapshot) {
-                                                if (snapshot.connectionState ==
+                                                if (snapshot
+                                                        .connectionState ==
                                                     ConnectionState.waiting) {
-                                                  return const SizedBox();
-                                                } else if (snapshot.hasError) {
+                                                  return const SizedBox(height: 30,);
+                                                } else if (snapshot
+                                                    .hasError) {
                                                   return Text(
                                                       'Error: ${snapshot.error}');
                                                 } else {
@@ -194,8 +197,10 @@ class WalletScreen extends StatelessWidget {
                                   children: [
                                     ClipRect(
                                       child: Align(
-                                        alignment:Alignment.centerLeft,
-                                        widthFactor: MediaQuery.sizeOf(context).width*0.4,
+                                        alignment: Alignment.centerLeft,
+                                        widthFactor:
+                                            MediaQuery.sizeOf(context).width *
+                                                0.4,
                                         child: Row(
                                           children: [
                                             Column(
@@ -206,7 +211,8 @@ class WalletScreen extends StatelessWidget {
                                                   'Total Balance',
                                                   style: TextStyle(
                                                     fontFamily: 'Quicksand',
-                                                    fontWeight: FontWeight.bold,
+                                                    fontWeight:
+                                                        FontWeight.bold,
                                                     fontSize: 15,
                                                   ),
                                                 ),
@@ -214,19 +220,26 @@ class WalletScreen extends StatelessWidget {
                                                   height: 10,
                                                 ),
                                                 FutureBuilder<double>(
-                                                  future: cubit.getBalanceSum(),
-                                                  builder: (context, snapshot) {
-                                                    if (snapshot.connectionState ==
-                                                        ConnectionState.waiting) {
+                                                  future:
+                                                      cubit.getBalanceSum(),
+                                                  builder:
+                                                      (context, snapshot) {
+                                                    if (snapshot
+                                                            .connectionState ==
+                                                        ConnectionState
+                                                            .waiting) {
                                                       return const SizedBox();
-                                                    } else if (snapshot.hasError) {
+                                                    } else if (snapshot
+                                                        .hasError) {
                                                       return Text(
                                                           'Error: ${snapshot.error}');
                                                     } else {
                                                       return Text(
                                                         '${cubit.currency} ${snapshot.data?.toStringAsFixed(2)}',
-                                                        style: const TextStyle(
-                                                          fontFamily: 'Quicksand',
+                                                        style:
+                                                            const TextStyle(
+                                                          fontFamily:
+                                                              'Quicksand',
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           fontSize: 25,
@@ -249,7 +262,8 @@ class WalletScreen extends StatelessWidget {
                                                       : Icons
                                                           .arrow_circle_down_rounded,
                                                   color:
-                                                      (cubit.changePercentage > 0)
+                                                      (cubit.changePercentage >
+                                                              0)
                                                           ? Styles.positive
                                                           : Styles.negative,
                                                   size: 30,
@@ -261,7 +275,8 @@ class WalletScreen extends StatelessWidget {
                                                   '${cubit.changePercentage} %',
                                                   style: const TextStyle(
                                                     fontFamily: 'Quicksand',
-                                                    fontWeight: FontWeight.bold,
+                                                    fontWeight:
+                                                        FontWeight.bold,
                                                     fontSize: 12,
                                                   ),
                                                 ),
