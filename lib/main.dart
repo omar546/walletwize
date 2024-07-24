@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import 'package:walletwize/shared/components/constants.dart';
 import 'package:walletwize/shared/network/local/cache_helper.dart';
 import 'package:walletwize/shared/network/remote/dio_helper.dart';
@@ -17,7 +21,16 @@ void main() async {
   // await Future.delayed(const Duration(milliseconds: 750));
   // if main() is async and there is await down here it will wait for it to finish before launching app
   WidgetsFlutterBinding.ensureInitialized();
-
+  Socket socket = io('http://16.170.98.54/',
+      OptionBuilder()
+          .setTransports(['websocket']) // for Flutter or Dart VM
+          .disableAutoConnect()  // disable auto-connection
+          .setExtraHeaders({'foo': 'bar'}) // optional
+          .build()
+  );
+  socket.connect();
+  GetIt.I.registerSingleton<Socket>(socket);
+  log('connect time');
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
 

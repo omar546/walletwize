@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:socket_io_client/socket_io_client.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 import 'package:walletwize/shared/components/constants.dart';
@@ -343,7 +345,7 @@ class AppCubit extends Cubit<AppStates> {
   }
 
   //API FUNCTIONS
-  IO.Socket socket = IO.io('http://16.170.98.54/');
+
   Future<void> sendSyncData(Database db, IO.Socket socket) async {
     final List<Map<String, dynamic>> changes =
         await db.query('change_log', where: 'sync_time IS NULL');
@@ -431,6 +433,7 @@ class AppCubit extends Cubit<AppStates> {
   List<Map> newTransactions = [];
   List<Map> newSources = [];
   List<Map> changelog = [];
+  final Socket socket = GetIt.I<Socket>();
   double mustCount = CacheHelper.getData(key: 'musts') ?? 0.0;
   double needCount = CacheHelper.getData(key: 'needs') ?? 0.0;
   double wantCount = CacheHelper.getData(key: 'wants') ?? 0.0;
