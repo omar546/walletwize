@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,23 +19,26 @@ void main() async {
   // await Future.delayed(const Duration(milliseconds: 750));
   // if main() is async and there is await down here it will wait for it to finish before launching app
   WidgetsFlutterBinding.ensureInitialized();
-  Socket socket = io('http://16.170.98.54/',
-      OptionBuilder()
-          .setTransports(['websocket']) // for Flutter or Dart VM
-          .disableAutoConnect()  // disable auto-connection
-          .setExtraHeaders({'foo': 'bar'}) // optional
-          .build()
-  );
-  socket.connect();
-  GetIt.I.registerSingleton<Socket>(socket);
-  log('connect time');
   Bloc.observer = MyBlocObserver();
   DioHelper.init();
-
   await CacheHelper.init();
+  token = CacheHelper.getData(key: 'token');
+  Socket socket = io(
+      'http://16.170.98.54',
+      OptionBuilder().setTransports(['websocket'])
+          .setExtraHeaders({'Authorization': 'Bearer $token'}) // optional
+          .build());
+  // socket.connect();
+  socket.on('connect', (_) {
+    if (kDebugMode) {
+      print('connected');
+    }
+  });
+  GetIt.I.registerSingleton<Socket>(socket);
+
   Widget widget;
   bool onBoarding = CacheHelper.getData(key: 'onBoarding') ?? false;
-  token = CacheHelper.getData(key: 'token');
+
   if (kDebugMode) {
     print(token);
   }

@@ -68,50 +68,52 @@ class WalletScreen extends StatelessWidget {
                                     children: [
                                       Row(
                                         children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                'Total Balance',
-                                                style: TextStyle(
-                                                  fontFamily: 'Quicksand',
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 12,
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                  'Total Balance',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Quicksand',
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              FutureBuilder<double>(
-                                                future: cubit.getBalanceSum(),
-                                                builder: (context, snapshot) {
-                                                  if (snapshot
-                                                          .connectionState ==
-                                                      ConnectionState.waiting) {
-                                                    return const SizedBox(
-                                                      height: 100,
-                                                    );
-                                                  } else if (snapshot
-                                                      .hasError) {
-                                                    return Text(
-                                                        'Error: ${snapshot.error}');
-                                                  } else {
-                                                    return Text(
-                                                      '${cubit.currency} ${snapshot.data?.toStringAsFixed(2)}',
-                                                      style: const TextStyle(
-                                                        fontFamily: 'Quicksand',
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 20,
-                                                      ),
-                                                    );
-                                                  }
-                                                },
-                                              ),
-                                            ],
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                FutureBuilder<double>(
+                                                  future: cubit.getBalanceSum(),
+                                                  builder: (context, snapshot) {
+                                                    if (snapshot
+                                                            .connectionState ==
+                                                        ConnectionState.waiting) {
+                                                      return const SizedBox(
+                                                        height: 100,
+                                                      );
+                                                    } else if (snapshot
+                                                        .hasError) {
+                                                      return Text(
+                                                          'Error: ${snapshot.error}');
+                                                    } else {
+                                                      return Text(
+                                                        '${cubit.currency} ${snapshot.data?.toStringAsFixed(2)}',
+                                                        style: const TextStyle(
+                                                          fontFamily: 'Quicksand',
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 20,
+                                                        ),
+                                                      );
+                                                    }
+                                                  },
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                           const Spacer(),
                                           Column(

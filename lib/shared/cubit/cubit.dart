@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -346,9 +345,9 @@ class AppCubit extends Cubit<AppStates> {
 
   //API FUNCTIONS
 
-  Future<void> sendSyncData(Database db, IO.Socket socket) async {
+  Future<void> sendSyncData() async {
     final List<Map<String, dynamic>> changes =
-        await db.query('change_log', where: 'sync_time IS NULL');
+        await database.query('change_log', where: 'sync_time IS NULL');
 
     for (Map<String, dynamic> change in changes) {
       final String tableName = change['table_name'];
@@ -356,7 +355,7 @@ class AppCubit extends Cubit<AppStates> {
       final String operation = change['operation'];
 
       final List<Map<String, dynamic>> records =
-          await db.query(tableName, where: 'id = ?', whereArgs: [rowId]);
+          await database.query(tableName, where: 'id = ?', whereArgs: [rowId]);
 
       if (records.isNotEmpty) {
         final Map<String, dynamic> record = records.first;
@@ -370,7 +369,7 @@ class AppCubit extends Cubit<AppStates> {
 
         socket.emit('save_data', json.encode(payload));
 
-        await db.update(
+        await database.update(
             'change_log', {'sync_time': DateTime.now().toIso8601String()},
             where: 'id = ?', whereArgs: [change['id']]);
       }
@@ -530,7 +529,7 @@ class AppCubit extends Cubit<AppStates> {
         ).then(
           (value) {
             emit(AppInsertDatabaseState());
-            sendSyncData(database, socket);
+            sendSyncData();
             changeBottomNavBarState(0);
             getFromDatabase(database);
           },
