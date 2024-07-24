@@ -1,20 +1,15 @@
-
-
 abstract class WalletRegisterStates {}
 
 class WalletRegisterInitialState extends WalletRegisterStates {
   WalletRegisterInitialState();
 }
 
-
 class WalletRegisterLoadingState extends WalletRegisterStates {}
 
-class WalletRegisterSuccessState extends WalletRegisterStates
-{
+class WalletRegisterSuccessState extends WalletRegisterStates {
   final String message;
 
   WalletRegisterSuccessState(this.message);
-
 }
 
 class WalletRegisterErrorState extends WalletRegisterStates {
@@ -22,4 +17,5 @@ class WalletRegisterErrorState extends WalletRegisterStates {
 
   WalletRegisterErrorState(this.error);
 }
+
 class WalletRegChangePasswordVisibilityState extends WalletRegisterStates {}

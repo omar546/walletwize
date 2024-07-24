@@ -23,9 +23,9 @@ class WalletScreen extends StatelessWidget {
 
           return Scaffold(
               body: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          child: Column(
+            physics: const BouncingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -91,7 +91,9 @@ class WalletScreen extends StatelessWidget {
                                                   if (snapshot
                                                           .connectionState ==
                                                       ConnectionState.waiting) {
-                                                    return const SizedBox(height: 100,);
+                                                    return const SizedBox(
+                                                      height: 100,
+                                                    );
                                                   } else if (snapshot
                                                       .hasError) {
                                                     return Text(
@@ -246,7 +248,9 @@ class WalletScreen extends StatelessWidget {
                                                               .connectionState ==
                                                           ConnectionState
                                                               .waiting) {
-                                                        return const SizedBox(height: 100,);
+                                                        return const SizedBox(
+                                                          height: 100,
+                                                        );
                                                       } else if (snapshot
                                                           .hasError) {
                                                         return Text(
@@ -352,8 +356,8 @@ class WalletScreen extends StatelessWidget {
                       ),
                     )),
               ],
-                          ),
-                        ));
+            ),
+          ));
         });
   }
 }

@@ -5,12 +5,11 @@ class DioHelper {
   static init() {
     dio = Dio(
       BaseOptions(
-          baseUrl: 'http://16.170.98.54/',
-          receiveDataWhenStatusError: true,
-          headers: {
-            'Content-Type': 'application/json',
-
-          },
+        baseUrl: 'http://16.170.98.54/',
+        receiveDataWhenStatusError: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
       ),
     );
     dio.options.followRedirects = true;
@@ -22,7 +21,7 @@ class DioHelper {
     Map<String, dynamic>? query,
     String? token,
   }) async {
-    dio.options.headers= {
+    dio.options.headers = {
       if (token != "null") 'Authorization': 'Bearer $token',
     };
     return await dio.get(
@@ -31,14 +30,13 @@ class DioHelper {
     );
   }
 
-
   static Future<Response> postData({
     required String url,
     Map<String, dynamic>? query,
-     Map<String, dynamic>? data,
+    Map<String, dynamic>? data,
     String? token,
   }) async {
-    dio.options.headers={
+    dio.options.headers = {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Bearer $token',
     };
@@ -52,11 +50,10 @@ class DioHelper {
     String lang = 'en',
     String? token,
   }) async {
-    dio.options.headers={
+    dio.options.headers = {
       'lang': lang,
       'Authorization': token,
     };
     return dio.put(url, queryParameters: query, data: data);
   }
 }
-

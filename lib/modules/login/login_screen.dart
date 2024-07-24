@@ -34,15 +34,12 @@ class LoginScreen extends StatelessWidget {
       child: BlocConsumer<WalletLoginCubit, WalletLoginStates>(
         listener: (context, state) {
           if (state is WalletLoginSuccessState) {
+            CacheHelper.saveData(key: 'token', value: state.loginModel.token)
+                .then((value) {
+              token = state.loginModel.token;
 
-              CacheHelper.saveData(
-                      key: 'token', value: state.loginModel.token)
-                  .then((value) {
-                token = state.loginModel.token;
-
-                navigateAndFinish(context, HomeLayout());
-              });
-
+              navigateAndFinish(context, HomeLayout());
+            });
           }
           if (state is WalletLoginErrorState) {
             debugPrint(state.error);
@@ -200,13 +197,12 @@ class LoginScreen extends StatelessWidget {
                                   context: context,
                                   text: "LOGIN",
                                   onPressed: () {
-                                    navigateTo(context, HomeLayout());
-                                    // if (loginKey.currentState!.validate()) {
-                                    //   WalletLoginCubit.get(context).userLogin(
-                                    //       email: emailController.text,
-                                    //       password: passwordController.text);
-                                    // debugPrint(token);
-                                    // }
+                                    if (loginKey.currentState!.validate()) {
+                                      WalletLoginCubit.get(context).userLogin(
+                                          email: emailController.text,
+                                          password: passwordController.text);
+                                      debugPrint(token);
+                                    }
                                   }),
                               fallback: (context) =>
                                   const CircularProgressIndicator()),

@@ -16,7 +16,6 @@ class RegisterScreen extends StatelessWidget {
   var passwordController = TextEditingController();
   var passwordController2 = TextEditingController();
 
-
   RegisterScreen({super.key});
 
   @override
@@ -26,16 +25,12 @@ class RegisterScreen extends StatelessWidget {
           RegisterCubit(WalletRegisterInitialState()),
       child: BlocConsumer<RegisterCubit, WalletRegisterStates>(
         listener: (context, state) {
-          if(state is WalletRegisterSuccessState){
-            showToast(
-                message: state.message,
-                state: ToastStates.SUCCESS);
+          if (state is WalletRegisterSuccessState) {
+            showToast(message: state.message, state: ToastStates.SUCCESS);
             navigateTo(context, LoginScreen());
           }
-          if(state is WalletRegisterErrorState){
-            showToast(
-                message: state.error,
-                state: ToastStates.ERROR);
+          if (state is WalletRegisterErrorState) {
+            showToast(message: state.error, state: ToastStates.ERROR);
           }
         },
         builder: (context, state) {
@@ -196,12 +191,14 @@ class RegisterScreen extends StatelessWidget {
                                   context: context,
                                   text: "REGISTER",
                                   onPressed: () {
-                                    if(passwordController.text == passwordController2.text){
-                                    if (formKey.currentState!.validate()) {
-                                      RegisterCubit.get(context).userRegister(
-                                          email: emailController.text,
-                                          password: passwordController.text);
-                                    }}
+                                    if (passwordController.text ==
+                                        passwordController2.text) {
+                                      if (formKey.currentState!.validate()) {
+                                        RegisterCubit.get(context).userRegister(
+                                            email: emailController.text,
+                                            password: passwordController.text);
+                                      }
+                                    }
                                   }),
                               fallback: (context) =>
                                   const CircularProgressIndicator()),

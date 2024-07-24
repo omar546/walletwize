@@ -9,5 +9,4 @@ class Styles {
   static const Color positive = Color(0xFF69A65B);
   static const Color negative = Color(0xFFC5283D);
   static const Color prussian = Color(0xff273043);
-
 }

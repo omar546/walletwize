@@ -39,12 +39,12 @@ class HomeLayout extends StatelessWidget {
               ),
               title: const Center(
                   child: Text(
-                    'WalletWize',
-                    style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        fontFamily: 'Quicksand',
-                        fontSize: 25),
-                  )),
+                'WalletWize',
+                style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontFamily: 'Quicksand',
+                    fontSize: 25),
+              )),
               actions: [
                 IconButton(
                   icon: const Icon(Icons.clear_all),
@@ -72,9 +72,9 @@ class HomeLayout extends StatelessWidget {
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
-                                cubit.needCount=0.0;
-                                cubit.mustCount=0.0;
-                                cubit.wantCount=0.0;
+                                cubit.needCount = 0.0;
+                                cubit.mustCount = 0.0;
+                                cubit.wantCount = 0.0;
                                 CacheHelper.saveData(key: 'musts', value: 0.0);
                                 CacheHelper.saveData(key: 'needs', value: 0.0);
                                 CacheHelper.saveData(key: 'wants', value: 0.0);
@@ -102,168 +102,168 @@ class HomeLayout extends StatelessWidget {
                   if (cubit.newSources.isNotEmpty) {
                     cubit.changeBottomNavBarState(0);
                     cubit.showSources();
-                    cubit.SheetChange();
+                    cubit.sheetChange();
 
                     scaffoldKey.currentState!
                         .showBottomSheet((context) => StatefulBuilder(
-                      builder:
-                          (BuildContext context, StateSetter setState) {
-                        return Container(
-                          decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  topRight: Radius.circular(15),
-                                  bottomLeft: Radius.zero,
-                                  bottomRight: Radius.zero),
-                              color: Theme.of(context)
-                                  .scaffoldBackgroundColor,
-                              border: Border(
-                                  top: BorderSide(
-                                      color: CacheHelper.getData(
-                                          key: ThemeCubit
-                                              .themeKey) ==
-                                          0
-                                          ? Styles.prussian
-                                          : Styles.pacific))),
-                          height:
-                          MediaQuery.sizeOf(context).height * 0.3,
-                          width: double.infinity,
-                          child: Form(
-                            key: formKey,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment:
-                              CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  height: MediaQuery.sizeOf(context)
-                                      .height *
-                                      0.1,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    shrinkWrap: true,
-                                    itemCount: cubit.newSources.length,
-                                    itemBuilder: (context, index) {
-                                      return GestureDetector(
-                                          onTap: () {
-                                            cubit.updateSelectedIndex(
-                                                index);
-                                            setState(
-                                                    () {}); // Force rebuild inside StatefulBuilder
-                                          },
-                                          child:
-                                          buildSourceSelectionItem(
-                                            model:
-                                            cubit.newSources[index],
-                                            index: 0,
-                                            isSelected:
-                                            cubit.selectedSource ==
-                                                index,
-                                          ));
-                                    },
+                              builder:
+                                  (BuildContext context, StateSetter setState) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(15),
+                                          topRight: Radius.circular(15),
+                                          bottomLeft: Radius.zero,
+                                          bottomRight: Radius.zero),
+                                      color: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      border: Border(
+                                          top: BorderSide(
+                                              color: CacheHelper.getData(
+                                                          key: ThemeCubit
+                                                              .themeKey) ==
+                                                      0
+                                                  ? Styles.prussian
+                                                  : Styles.pacific))),
+                                  height:
+                                      MediaQuery.sizeOf(context).height * 0.3,
+                                  width: double.infinity,
+                                  child: Form(
+                                    key: formKey,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          height: MediaQuery.sizeOf(context)
+                                                  .height *
+                                              0.1,
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            shrinkWrap: true,
+                                            itemCount: cubit.newSources.length,
+                                            itemBuilder: (context, index) {
+                                              return GestureDetector(
+                                                  onTap: () {
+                                                    cubit.updateSelectedIndex(
+                                                        index);
+                                                    setState(
+                                                        () {}); // Force rebuild inside StatefulBuilder
+                                                  },
+                                                  child:
+                                                      buildSourceSelectionItem(
+                                                    model:
+                                                        cubit.newSources[index],
+                                                    index: 0,
+                                                    isSelected:
+                                                        cubit.selectedSource ==
+                                                            index,
+                                                  ));
+                                            },
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.sizeOf(context)
+                                                      .width *
+                                                  0.35,
+                                              child: customForm(
+                                                  context: context,
+                                                  controller: cubit
+                                                      .addTransactionAmountController,
+                                                  type: TextInputType.number,
+                                                  label: "",
+                                                  prefix: Icons
+                                                      .currency_exchange_rounded,
+                                                  validate: (String? value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Please type a balance';
+                                                    }
+                                                    return null; // Return null to indicate the input is valid
+                                                  },
+                                                  onSubmit: (v) {
+                                                    if (cubit.selectedSource !=
+                                                            -1 &&
+                                                        formKey.currentState!
+                                                            .validate()) {
+                                                      cubit.newTransaction(
+                                                          TimeOfDay.now()
+                                                              .format(context));
+                                                    }
+                                                  }),
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            ToggleSwitch(
+                                              customWidths: const [50.0, 50.0],
+                                              cornerRadius: 15.0,
+                                              activeBgColors: const [
+                                                [Styles.positive],
+                                                [Styles.negative]
+                                              ],
+                                              activeFgColor: Styles.whiteColor,
+                                              inactiveBgColor: Styles.greyColor,
+                                              inactiveFgColor:
+                                                  Styles.blackColor,
+                                              totalSwitches: 2,
+                                              icons: const [
+                                                Icons.add,
+                                                Icons.remove
+                                              ],
+                                              onToggle: (index) {
+                                                if (index == 0) {
+                                                  cubit.positiveTrans = true;
+                                                } else if (index == 1) {
+                                                  cubit.positiveTrans = false;
+                                                  cubit.setActivityType('Need');
+                                                  cubit.showActivityPrompt(
+                                                      context);
+                                                }
+                                              },
+                                            ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            IconButton(
+                                                onPressed: () {
+                                                  if (cubit.selectedSource !=
+                                                          -1 &&
+                                                      formKey.currentState!
+                                                          .validate()) {
+                                                    cubit.newTransaction(
+                                                        TimeOfDay.now()
+                                                            .format(context));
+                                                    Navigator.of(context).pop();
+                                                  }
+                                                },
+                                                icon: Icon(
+                                                  Icons.check_circle_rounded,
+                                                  color: CacheHelper.getData(
+                                                              key: ThemeCubit
+                                                                  .themeKey) ==
+                                                          0
+                                                      ? Styles.prussian
+                                                      : Styles.pacific,
+                                                  size: 40,
+                                                ))
+                                          ],
+                                        ),
+                                        const SizedBox(height: 30),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: MediaQuery.sizeOf(context)
-                                          .width *
-                                          0.35,
-                                      child: customForm(
-                                          context: context,
-                                          controller: cubit
-                                              .addTransactionAmountController,
-                                          type: TextInputType.number,
-                                          label: "",
-                                          prefix: Icons
-                                              .currency_exchange_rounded,
-                                          validate: (String? value) {
-                                            if (value == null ||
-                                                value.isEmpty) {
-                                              return 'Please type a balance';
-                                            }
-                                            return null; // Return null to indicate the input is valid
-                                          },
-                                          onSubmit: (v) {
-                                            if (cubit.selectedSource !=
-                                                -1 &&
-                                                formKey.currentState!
-                                                    .validate()) {
-                                              cubit.newTransaction(
-                                                  TimeOfDay.now()
-                                                      .format(context));
-                                            }
-                                          }),
-                                    ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    ToggleSwitch(
-                                      customWidths: const [50.0, 50.0],
-                                      cornerRadius: 15.0,
-                                      activeBgColors: const [
-                                        [Styles.positive],
-                                        [Styles.negative]
-                                      ],
-                                      activeFgColor: Styles.whiteColor,
-                                      inactiveBgColor: Styles.greyColor,
-                                      inactiveFgColor:
-                                      Styles.blackColor,
-                                      totalSwitches: 2,
-                                      icons: const [
-                                        Icons.add,
-                                        Icons.remove
-                                      ],
-                                      onToggle: (index) {
-                                        if (index == 0) {
-                                          cubit.positiveTrans = true;
-                                        } else if (index == 1) {
-                                          cubit.positiveTrans = false;
-                                          cubit.setActivityType('Need');
-                                          cubit.showActivityPrompt(
-                                              context);
-                                        }
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      width: 20,
-                                    ),
-                                    IconButton(
-                                        onPressed: () {
-                                          if (cubit.selectedSource !=
-                                              -1 &&
-                                              formKey.currentState!
-                                                  .validate()) {
-                                            cubit.newTransaction(
-                                                TimeOfDay.now()
-                                                    .format(context));
-                                            Navigator.of(context).pop();
-                                          }
-                                        },
-                                        icon: Icon(
-                                          Icons.check_circle_rounded,
-                                          color: CacheHelper.getData(
-                                              key: ThemeCubit
-                                                  .themeKey) ==
-                                              0
-                                              ? Styles.prussian
-                                              : Styles.pacific,
-                                          size: 40,
-                                        ))
-                                  ],
-                                ),
-                                const SizedBox(height: 30),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ))
+                                );
+                              },
+                            ))
                         .closed
-                        .then((value) => cubit.SheetChange());
+                        .then((value) => cubit.sheetChange());
                   } else {
                     showToast(
                         message: 'please add sources',

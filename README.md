@@ -3,6 +3,12 @@
 
 <p align="center">A Flutter Expense Tracking App</p>
 
+<p align="center">The App has a Flask Backend for Authentication and Realtime Backup Database</p>
+
+<p align="center">
+  <a href="https://github.com/ahmedhozny/walletwize-api">Backend-Repo</a>
+</p>
+
 
 ![icon_trans](https://github.com/omar546/walletwize/assets/71936776/7ce7ec14-0b2a-46ad-b85d-920dcdcac23b)
 <br>

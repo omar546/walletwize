@@ -30,7 +30,6 @@ Widget buildHistoryItem({required Map model, context, required index}) =>
                     fontFamily: 'Quicksand', fontWeight: FontWeight.bold),
               ),
               const Spacer(),
-
               Text(
                 model['amount'].toString().length > 9
                     ? '${AppCubit.get(context).currency} ${model['amount'].toString().substring(0, 4)}...'
@@ -264,7 +263,11 @@ Widget buildSourceSelectionItem(
             visible: model['type'] == '',
             child: Icon(
               Icons.account_balance,
-              color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific) : Styles.greyColor,
+              color: isSelected
+                  ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                      ? Styles.prussian
+                      : Styles.pacific)
+                  : Styles.greyColor,
             ),
           ),
           Visibility(
@@ -272,7 +275,11 @@ Widget buildSourceSelectionItem(
                 model['type'].contains('account'),
             child: Icon(
               Icons.account_balance,
-              color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific) : Styles.greyColor,
+              color: isSelected
+                  ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                      ? Styles.prussian
+                      : Styles.pacific)
+                  : Styles.greyColor,
             ),
           ),
           Visibility(
@@ -280,14 +287,22 @@ Widget buildSourceSelectionItem(
                 model['type'].contains('credit'),
             child: Icon(
               Icons.credit_card,
-              color: isSelected ?(CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific): Styles.greyColor,
+              color: isSelected
+                  ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                      ? Styles.prussian
+                      : Styles.pacific)
+                  : Styles.greyColor,
             ),
           ),
           Visibility(
             visible: model['type'].contains('cash'),
             child: Icon(
               Icons.money,
-              color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific): Styles.greyColor,
+              color: isSelected
+                  ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                      ? Styles.prussian
+                      : Styles.pacific)
+                  : Styles.greyColor,
             ),
           ),
           Text(
@@ -298,7 +313,11 @@ Widget buildSourceSelectionItem(
               fontWeight: FontWeight.w900,
               fontFamily: 'Quicksand',
               fontSize: 20,
-              color: isSelected ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific) : Styles.greyColor,
+              color: isSelected
+                  ? (CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+                      ? Styles.prussian
+                      : Styles.pacific)
+                  : Styles.greyColor,
             ),
           ),
         ],
@@ -329,7 +348,10 @@ Widget customButton(
     width: MediaQuery.sizeOf(context).width * widthRatio,
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
-          shape: const StadiumBorder(), backgroundColor: CacheHelper.getData(key: ThemeCubit.themeKey) == 0 ?Styles.prussian:Styles.pacific),
+          shape: const StadiumBorder(),
+          backgroundColor: CacheHelper.getData(key: ThemeCubit.themeKey) == 0
+              ? Styles.prussian
+              : Styles.pacific),
       onPressed: onPressed,
       child: Text(
         text,
@@ -367,7 +389,8 @@ Widget customForm({
     onFieldSubmitted: onSubmit,
     onChanged: onChange,
     validator: validate,
-    decoration: InputDecoration(errorStyle: const TextStyle(color: Styles.negative),
+    decoration: InputDecoration(
+      errorStyle: const TextStyle(color: Styles.negative),
       labelText: label,
       prefixIcon: Icon(
         prefix,

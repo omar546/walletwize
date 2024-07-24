@@ -41,7 +41,7 @@ class RegisterCubit extends Cubit<WalletRegisterStates> {
   void changePasswordVisibility() {
     isPassword = !isPassword;
     suffix =
-    isPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined;
+        isPassword ? Icons.visibility_outlined : Icons.visibility_off_outlined;
 
     emit(WalletRegChangePasswordVisibilityState());
   }

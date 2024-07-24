@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -7,8 +6,6 @@ import '../../shared/components/components.dart';
 import '../../shared/network/local/cache_helper.dart';
 import '../../shared/styles/styles.dart';
 import '../login/login_screen.dart';
-
-
 
 class BoardingModel {
   final String image;
