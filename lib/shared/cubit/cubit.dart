@@ -286,7 +286,7 @@ class AppCubit extends Cubit<AppStates> {
 
   void updateSelectedIndex(int index) {
     selectedSource = index;
-    emit(AppChangeSelectedIndexState());
+    // emit(AppChangeSelectedIndexState());
   }
 
   Future insertIntoTransactions({
