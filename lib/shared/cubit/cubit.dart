@@ -235,7 +235,7 @@ class AppCubit extends Cubit<AppStates> {
 
   void sheetChange() {
     visibleSheet = !visibleSheet;
-    emit(SheetChangeState());
+    // emit(SheetChangeState());
   }
 
   void showSourcePrompt(BuildContext context) {

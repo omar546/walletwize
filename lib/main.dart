@@ -25,8 +25,8 @@ void main() async {
   token = CacheHelper.getData(key: 'token');
   Socket socket = io(
       'http://16.170.98.54',
-      OptionBuilder().setTransports(['websocket'])
-          .setExtraHeaders({'Authorization': 'Bearer $token'}) // optional
+      OptionBuilder().setTransports(['websocket']).setExtraHeaders(
+              {'Authorization': 'Bearer $token'}) // optional
           .build());
   // socket.connect();
   socket.on('connect', (_) {

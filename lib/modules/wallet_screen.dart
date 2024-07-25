@@ -23,7 +23,9 @@ class WalletScreen extends StatelessWidget {
 
           return Scaffold(
               body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
+            physics: cubit.visibleSheet
+                ? const NeverScrollableScrollPhysics()
+                : const BouncingScrollPhysics(),
             scrollDirection: Axis.vertical,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -35,7 +37,9 @@ class WalletScreen extends StatelessWidget {
                 Center(
                   child: GestureDetector(
                     onTap: () {
-                      AppCubit.get(context).showSources();
+                      if (!cubit.visibleSheet) {
+                        AppCubit.get(context).showSources();
+                      }
                     },
                     child: Column(
                       children: [
@@ -91,7 +95,8 @@ class WalletScreen extends StatelessWidget {
                                                   builder: (context, snapshot) {
                                                     if (snapshot
                                                             .connectionState ==
-                                                        ConnectionState.waiting) {
+                                                        ConnectionState
+                                                            .waiting) {
                                                       return const SizedBox(
                                                         height: 100,
                                                       );
@@ -103,7 +108,8 @@ class WalletScreen extends StatelessWidget {
                                                       return Text(
                                                         '${cubit.currency} ${snapshot.data?.toStringAsFixed(2)}',
                                                         style: const TextStyle(
-                                                          fontFamily: 'Quicksand',
+                                                          fontFamily:
+                                                              'Quicksand',
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           fontSize: 20,
@@ -201,8 +207,11 @@ class WalletScreen extends StatelessWidget {
                                           },
                                         ),
                                       ),
-                                      const Icon(
-                                        Icons.arrow_drop_up,
+                                      Visibility(
+                                        visible: !cubit.visibleSheet,
+                                        child: const Icon(
+                                          Icons.arrow_drop_up,
+                                        ),
                                       ),
                                     ],
                                   ),

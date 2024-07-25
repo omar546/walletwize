@@ -126,7 +126,7 @@ class HomeLayout extends StatelessWidget {
                                                   ? Styles.prussian
                                                   : Styles.pacific))),
                                   height:
-                                      MediaQuery.sizeOf(context).height * 0.3,
+                                      MediaQuery.sizeOf(context).height * 0.34,
                                   width: double.infinity,
                                   child: Form(
                                     key: formKey,
@@ -263,7 +263,10 @@ class HomeLayout extends StatelessWidget {
                               },
                             ))
                         .closed
-                        .then((value) => cubit.sheetChange());
+                        .then((value) {
+                      cubit.sheetChange();
+                      cubit.changeBottomNavBarState(0);
+                    });
                   } else {
                     showToast(
                         message: 'please add sources',
