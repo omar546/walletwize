@@ -164,6 +164,7 @@ class HomeLayout extends StatelessWidget {
                                             },
                                           ),
                                         ),
+                                        const SizedBox(height: 10),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -240,6 +241,9 @@ class HomeLayout extends StatelessWidget {
                                                     cubit.newTransaction(
                                                         TimeOfDay.now()
                                                             .format(context));
+                                                    cubit
+                                                        .changeBottomNavBarState(
+                                                            0);
                                                     Navigator.of(context).pop();
                                                   }
                                                 },
@@ -255,7 +259,7 @@ class HomeLayout extends StatelessWidget {
                                                 ))
                                           ],
                                         ),
-                                        const SizedBox(height: 30),
+                                        const SizedBox(height: 50),
                                       ],
                                     ),
                                   ),

@@ -39,9 +39,21 @@ Widget buildHistoryItem({required Map model, context, required index}) =>
               ),
               const Spacer(),
               Visibility(
-                  replacement: const Icon(
-                    Icons.arrow_downward_rounded,
-                    color: Styles.negative,
+                  replacement: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: model['activity'] == 'Need'
+                            ? Colors.yellow
+                            : (model['activity'] == 'Must'
+                                ? Colors.orange
+                                : Styles.pacific),
+                        radius: 2,
+                      ),
+                      const Icon(
+                        Icons.arrow_downward_rounded,
+                        color: Styles.negative,
+                      ),
+                    ],
                   ),
                   visible: model['type'] == 'increase',
                   child: const Icon(

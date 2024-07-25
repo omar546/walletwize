@@ -234,54 +234,57 @@ class WalletScreen extends StatelessWidget {
                                                   0.4,
                                           child: Row(
                                             children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  const Text(
-                                                    'Total Balance',
-                                                    style: TextStyle(
-                                                      fontFamily: 'Quicksand',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15,
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'Total Balance',
+                                                      style: TextStyle(
+                                                        fontFamily: 'Quicksand',
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 15,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  FutureBuilder<double>(
-                                                    future:
-                                                        cubit.getBalanceSum(),
-                                                    builder:
-                                                        (context, snapshot) {
-                                                      if (snapshot
-                                                              .connectionState ==
-                                                          ConnectionState
-                                                              .waiting) {
-                                                        return const SizedBox(
-                                                          height: 100,
-                                                        );
-                                                      } else if (snapshot
-                                                          .hasError) {
-                                                        return Text(
-                                                            'Error: ${snapshot.error}');
-                                                      } else {
-                                                        return Text(
-                                                          '${cubit.currency} ${snapshot.data?.toStringAsFixed(2)}',
-                                                          style:
-                                                              const TextStyle(
-                                                            fontFamily:
-                                                                'Quicksand',
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 25,
-                                                          ),
-                                                        );
-                                                      }
-                                                    },
-                                                  ),
-                                                ],
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    FutureBuilder<double>(
+                                                      future:
+                                                          cubit.getBalanceSum(),
+                                                      builder:
+                                                          (context, snapshot) {
+                                                        if (snapshot
+                                                                .connectionState ==
+                                                            ConnectionState
+                                                                .waiting) {
+                                                          return const SizedBox(
+                                                            height: 100,
+                                                          );
+                                                        } else if (snapshot
+                                                            .hasError) {
+                                                          return Text(
+                                                              'Error: ${snapshot.error}');
+                                                        } else {
+                                                          return Text(
+                                                            '${cubit.currency} ${snapshot.data?.toStringAsFixed(2)}',
+                                                            style:
+                                                                const TextStyle(
+                                                              fontFamily:
+                                                                  'Quicksand',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 25,
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                               const Spacer(),
                                               Column(
