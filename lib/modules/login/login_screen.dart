@@ -37,7 +37,6 @@ class LoginScreen extends StatelessWidget {
             CacheHelper.saveData(key: 'token', value: state.loginModel.token)
                 .then((value) {
               token = state.loginModel.token;
-
               navigateAndFinish(context, HomeLayout());
             });
           }

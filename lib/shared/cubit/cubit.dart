@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:sqflite/sqflite.dart';
@@ -22,6 +23,7 @@ class AppCubit extends Cubit<AppStates> {
 
   static AppCubit get(context) => BlocProvider.of(context);
   //VARS
+
   var addSourceController = TextEditingController();
   var addSourceBalanceController = TextEditingController();
   var addSourceTypeController = TextEditingController();
@@ -139,6 +141,7 @@ class AppCubit extends Cubit<AppStates> {
                       ).then((value) {
                         token = null;
                         CacheHelper.removeData(key: 'token');
+                        freshStart();
                       });
 
                       navigateAndFinish(context, LoginScreen());
@@ -345,7 +348,7 @@ class AppCubit extends Cubit<AppStates> {
 
   //API FUNCTIONS
 
-  Future<void> sendSyncData() async {
+  Future<void> sendSyncData(Socket socket) async {
     final List<Map<String, dynamic>> changes =
         await database.query('change_log', where: 'sync_time IS NULL');
 
@@ -368,7 +371,6 @@ class AppCubit extends Cubit<AppStates> {
         };
 
         socket.emit('save_data', json.encode(payload));
-
         await database.update(
             'change_log', {'sync_time': DateTime.now().toIso8601String()},
             where: 'id = ?', whereArgs: [change['id']]);
@@ -384,31 +386,34 @@ class AppCubit extends Cubit<AppStates> {
     for (String tableName in tables) {
       final List<Map<String, dynamic>> existingTriggers = await db.rawQuery(
           "SELECT name FROM sqlite_master WHERE type='trigger' AND name LIKE ?",
-          ["before_%_$tableName"]);
+          ["after_%_$tableName"]);
 
       final List<Map<String, dynamic>> triggerDefinitions = [
         {
-          "name": "before_insert_$tableName",
-          "timing": "BEFORE INSERT",
+          "name": "after_insert_$tableName",
+          "timing": "AFTER INSERT",
           "body": """
           INSERT INTO change_log (table_name, row_id, operation)
-          VALUES ('$tableName', NEW.id, 'I');
+          SELECT '$tableName', NEW.id, 'I'
+          WHERE (SELECT flag FROM sync_flag) = 1;
         """
         },
         {
-          "name": "before_update_$tableName",
-          "timing": "BEFORE UPDATE",
+          "name": "after_update_$tableName",
+          "timing": "AFTER UPDATE",
           "body": """
           INSERT INTO change_log (table_name, row_id, operation)
-          VALUES ('$tableName', NEW.id, 'U');
+          SELECT '$tableName', NEW.id, 'U'
+          WHERE (SELECT flag FROM sync_flag) = 1;
         """
         },
         {
-          "name": "before_delete_$tableName",
-          "timing": "BEFORE DELETE",
+          "name": "after_delete_$tableName",
+          "timing": "AFTER DELETE",
           "body": """
           INSERT INTO change_log (table_name, row_id, operation)
-          VALUES ('$tableName', OLD.id, 'D');
+          SELECT '$tableName', NEW.id, 'D'
+          WHERE (SELECT flag FROM sync_flag) = 1;
         """
         },
       ];
@@ -432,7 +437,94 @@ class AppCubit extends Cubit<AppStates> {
   List<Map> newTransactions = [];
   List<Map> newSources = [];
   List<Map> changelog = [];
-  final Socket socket = GetIt.I<Socket>();
+  bool hello = false;
+  Socket? socket;
+
+  void connect() {
+    socket = io(
+      'http://16.170.98.54',
+      OptionBuilder()
+          .setTransports(['websocket'])
+          .disableAutoConnect()
+          .setExtraHeaders({'Authorization': 'Bearer $token'})
+          .build(),
+    );
+    socket?.on('load_data', (data) async {
+      if (kDebugMode) {
+        print('Received load data response: ${data.runtimeType}');
+      }
+      if (data.containsKey('error')) {
+        if (kDebugMode) {
+          print('error');
+        }
+        await database.execute("UPDATE sync_flag SET flag = 1;");
+        showToast(message: 'Done', state: ToastStates.SUCCESS);
+        return;
+      }
+      final String tableName = data['table_name'];
+      final String operation = data['operation'];
+      final Map<String, dynamic> recordData = data['data'];
+
+      if (operation == 'I') {
+        await database.insert(tableName, recordData);
+      } else if (operation == 'U') {
+        await database.update(tableName, recordData,
+            where: 'id = ?', whereArgs: [recordData['id']]);
+      } else if (operation == 'D') {
+        await database
+            .delete(tableName, where: 'id = ?', whereArgs: [recordData['id']]);
+      }
+
+      await database.insert('change_log', {
+        'table_name': tableName,
+        'row_id': recordData['id'],
+        'operation': operation,
+        'change_time': DateTime.now().toIso8601String(),
+        'sync_time': DateTime.now().toIso8601String(),
+      }).then((value) {
+        getFromDatabase(database);
+      });
+      loadDataFromServer(data['log_id']);
+    });
+    socket?.onConnect((_) async {
+      if (kDebugMode) {
+        print('connected');
+      }
+      final List<Map<String, dynamic>> result =
+          await database.rawQuery('SELECT MAX(id) as max_id FROM change_log');
+      print(result);
+      int? f = result.first['max_id'];
+      f ??= 0;
+      showToast(message: 'Syncing', state: ToastStates.WARNING);
+      await loadDataFromServer(f);
+      // for (int i = 0;; i++) {
+      //   try {
+      //     if (kDebugMode) {
+      //       print(i);
+      //     }
+      //     await loadDataFromServer(i);
+      //   } on Exception catch (e) {
+      //
+      //     break;
+      //   }
+      // }
+    });
+
+    socket?.onDisconnect((_) {
+      if (kDebugMode) {
+        print('Disconnected from server');
+      }
+    });
+
+    socket?.connect();
+  }
+
+  Future<void> loadDataFromServer(int offsetId) async {
+    final Map<String, dynamic> payload = {"offset_id": offsetId};
+    socket?.emit('load_data', json.encode(payload));
+
+  }
+
   double mustCount = CacheHelper.getData(key: 'musts') ?? 0.0;
   double needCount = CacheHelper.getData(key: 'needs') ?? 0.0;
   double wantCount = CacheHelper.getData(key: 'wants') ?? 0.0;
@@ -447,8 +539,16 @@ class AppCubit extends Cubit<AppStates> {
             'CREATE TABLE sources (id INTEGER PRIMARY KEY AUTOINCREMENT, source TEXT,type TEXT,balance REAL)');
         await db.execute(
             'CREATE TABLE change_log (id INTEGER PRIMARY KEY AUTOINCREMENT, table_name TEXT not null,row_id INTEGER not null,operation CHAR(1) not null,change_time TIMESTAMP default CURRENT_TIMESTAMP,sync_time TIMESTAMP)');
+        await db.execute("""
+    CREATE TABLE IF NOT EXISTS sync_flag (
+      flag INTEGER
+    );
+  """);
       },
-      onOpen: (database) {
+      onOpen: (database) async {
+        await database
+            .execute("INSERT OR IGNORE INTO sync_flag (flag) VALUES (0);");
+        connect();
         getFromDatabase(database);
         if (CacheHelper.getData(key: 'triggers') != 'true') {
           createTriggersForSqliteTable(database);
@@ -529,7 +629,6 @@ class AppCubit extends Cubit<AppStates> {
         ).then(
           (value) {
             emit(AppInsertDatabaseState());
-            sendSyncData();
             changeBottomNavBarState(0);
             getFromDatabase(database);
           },
@@ -570,7 +669,27 @@ class AppCubit extends Cubit<AppStates> {
             );
           },
         );
+        sendSyncData(socket!);
         emit(AppGetDatabaseState());
+      },
+    );
+  }
+
+  void freshStart() {
+    database.rawDelete('DELETE FROM transactions; DELETE FROM sources').then(
+      (value) {
+        CacheHelper.saveData(key: 'changp', value: 0.0);
+        CacheHelper.getData(key: 'changp');
+        CacheHelper.saveData(key: 'triggers', value: false);
+        CacheHelper.getData(key: 'triggers');
+        CacheHelper.saveData(key: 'musts', value: 0.0);
+        CacheHelper.getData(key: 'musts');
+        CacheHelper.saveData(key: 'needs', value: 0.0);
+        CacheHelper.getData(key: 'needs');
+        CacheHelper.saveData(key: 'wants', value: 0.0);
+        CacheHelper.getData(key: 'wants');
+        getFromDatabase(database);
+        emit(AppDeleteDatabaseState());
       },
     );
   }

@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:socket_io_client/socket_io_client.dart';
 import 'package:walletwize/shared/components/constants.dart';
 import 'package:walletwize/shared/network/local/cache_helper.dart';
 import 'package:walletwize/shared/network/remote/dio_helper.dart';
@@ -23,18 +21,6 @@ void main() async {
   DioHelper.init();
   await CacheHelper.init();
   token = CacheHelper.getData(key: 'token');
-  Socket socket = io(
-      'http://16.170.98.54',
-      OptionBuilder().setTransports(['websocket']).setExtraHeaders(
-              {'Authorization': 'Bearer $token'}) // optional
-          .build());
-  // socket.connect();
-  socket.on('connect', (_) {
-    if (kDebugMode) {
-      print('connected');
-    }
-  });
-  GetIt.I.registerSingleton<Socket>(socket);
 
   Widget widget;
   bool onBoarding = CacheHelper.getData(key: 'onBoarding') ?? false;
