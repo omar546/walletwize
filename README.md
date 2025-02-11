@@ -3,7 +3,7 @@
 
 <p align="center">A Flutter Expense Tracking App</p>
 
-<p align="center">currently working on a Flask Backend for Authentication and Realtime Backup Database</p>
+<p align="center">with a Flask Backend for Authentication and Realtime Backup Database using a socket connection</p>
 
 <p align="center">
   <a href="https://github.com/ahmedhozny/walletwize-api">Backend-Repo</a>
